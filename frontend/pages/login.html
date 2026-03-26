@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--//////////////////////HEAD SECTION\\\\\\\\\\\\\\\\\\\\\\\\\\\ -->
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpeg" href="../images/PP_Logo.jpeg">
+    <title>PlacePro Login</title>
+    <link rel="stylesheet" href="../css/login.css">
+    <!-- ///////////////////////////SCRIPT SECTION\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>0
+        function handleCredentialResponse(response) {
+            const data = parseJwt(response.credential);
+            localStorage.setItem("loggedInUser", data.name);
+            window.location.href = "student.html";
+        }
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+    </script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<script>
+    function setRole(button, roleName) {
+        document.querySelectorAll('.role-btn')
+            .forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById("selectedRole").value = roleName;
+        document.getElementById("loginTitle").innerText = roleName + " Login";
+    }
+</script>
+<script>
+    function handleCredentialResponse(response) {
+        console.log("Encoded JWT ID token: " + response.credential);
+        const role = document.getElementById("selectedRole").value;
+        if (role === "Student") {
+            window.location.href = "student.html";
+        }
+        else if (role === "Admin (TPO)") {
+            window.location.href = "admin.html";
+        }
+        else if (role === "Recruiter") {
+            window.location.href = "recruiter.html";
+        }
+    }
+    function parseJwt(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    }
+</script>
+<script>
+
+    async function normalLogin() {
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const role = document.getElementById("selectedRole").value;
+
+        try {
+
+            const response = await fetch("http://localhost:8080/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    role: role
+                })
+            });
+
+            const message = await response.text();
+
+            if (response.ok) {
+
+                localStorage.setItem("loggedInUser", email);
+
+                if (role === "Student") {
+                    window.location.href = "student.html";
+                }
+                else if (role === "Admin (TPO)") {
+                    window.location.href = "admin.html";
+                }
+                else if (role === "Recruiter") {
+                    window.location.href = "recruiter.html";
+                }
+
+            } else {
+                alert(message);
+            }
+
+        } catch (error) {
+            alert("Server not reachable");
+        }
+
+    }
+
+</script>
+
+
+<script>
+    function goToSignup() {
+        const role = document.getElementById("selectedRole").value;
+        if (role === "Student") {
+            window.location.href = "s_signup.html";
+        }
+        else if (role === "Admin (TPO)") {
+            window.location.href = "a_signup.html";
+        }
+        else if (role === "Recruiter") {
+            window.location.href = "r_signup.html";
+        }
+    }
+</script>
+<!-- ////////////////////////////////SCRIPT SECTION ENDS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ -->
+<!--////////////////////////////////// HTML BODY \\\\\\\\\\\\\\\\\\\\\\\\\\\\\ -->
+
+<body>
+    <div class="container">
+        <div class="left-section">
+            <div class="login-card">
+                <div class="login-card_1">
+                    <h2 id="loginTitle">Student Login</h2>
+                    <div class="role-buttons">
+                        <button class="role-btn active" onclick="setRole(this,'Student')">Student</button>
+                        <button class="role-btn" onclick="setRole(this,'Admin (TPO)')">Admin</button>
+                        <button class="role-btn" onclick="setRole(this,'Recruiter')">Recruiter</button>
+                    </div>
+                    <input type="hidden" id="selectedRole" value="Student">
+                    <input type="email" id="email" placeholder="Email address" required>
+                    <input type="password" id="password" placeholder="Password" required>
+                    <div class="auth-buttons">
+                        <button class="login-btn" onclick="normalLogin()">Login</button>
+                        <button class="signup-btn" onclick="goToSignup()">Sign Up</button>
+                    </div>
+                    <p class="divider">OR</p>
+                    <button class="google-btn">
+                        <div id="g_id_onload"
+                            data-client_id="122497116018-oilku65h22hita86ed76kk4nqecddfg2.apps.googleusercontent.com"
+                            data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
+                            data-auto_prompt="false">
+                        </div>
+                        <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
+                            data-text="signin_with" data-size="large">
+                        </div>
+                </div>
+            </div>
+        </div>
+        <!--////////////////////////BRANDING PLACEPRO\\\\\\\\\\\\\\\\\\\\\\\\ -->
+        <div class="right-section">
+            <div class="branding">
+                <img src="../images/PP_Logo.jpeg" alt="PlacePro Logo">
+                <h1>PlacePro</h1>
+                <p>Where Talent Meets Opportunity</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

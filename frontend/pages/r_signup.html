@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/jpeg" href="../images/PP_Logo.jpeg">
+<title>PlacePro Recruiter Sign Up</title>
+<link rel="stylesheet" href="../css/login.css">
+<script>
+function signupRecruiter(){
+const recruiterid = document.getElementById("recruiterid").value;
+const company = document.getElementById("company").value;
+const name = document.getElementById("name").value;
+const phone = document.getElementById("phone").value;
+const address = document.getElementById("address").value;
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
+if(recruiterid=="" || company=="" || name=="" || phone=="" || address=="" || email=="" || password==""){
+alert("Please fill all fields");
+return;
+}
+alert("Recruiter Successfully Signed Up");
+window.location.href="login.html";
+}
+</script>
+</head>
+<body>
+<div class="container">
+<!-- LEFT SECTION : SIGNUP FORM -->
+<div class="left-section">
+<div class="login-card">
+<div class="login-card_1">
+<h2>Recruiter Sign Up</h2>
+<form onsubmit="event.preventDefault(); signupRecruiter();">
+<input type="text" id="recruiterid" placeholder="Recruiter ID" required>
+<input type="text" id="company" placeholder="Company Name" required>
+<input type="text" id="name" placeholder="Recruiter Name" required>
+<input type="tel" id="phone" placeholder="Phone Number" required>
+<input id="address" placeholder="Company Address" required></input>
+<input type="email" id="email" placeholder="Email ID" required>
+<input type="password" id="password" placeholder="Password" required>
+<button class="login-btn" type="submit">Sign Up</button>
+<p class="divider">Already have an account?</p>
+<button class="login-btn" type="button" onclick="window.location.href='login.html'">
+Login
+</button>
+</form>
+</div>
+</div>
+</div>
+<!-- RIGHT SECTION : BRANDING -->
+<div class="right-section">
+<div class="branding">
+<img src="../images/PP_Logo.jpeg" alt="PlacePro Logo">
+<h1>PlacePro</h1>
+<p>Where Talent Meets Opportunity</p>
+</div>
+</div>
+</div>
+</body>
+</html>
