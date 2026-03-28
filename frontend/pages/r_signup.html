@@ -2,19 +2,18 @@
 <html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/jpeg" href="../images/PP_Logo.jpeg">
+<link rel="icon" type="image/jpeg" href="place_pro_logo.jpeg">
 <title>PlacePro Recruiter Sign Up</title>
-<link rel="stylesheet" href="../css/login.css">
+<link rel="stylesheet" href="login.css">
 <script>
 function signupRecruiter(){
 const recruiterid = document.getElementById("recruiterid").value;
 const company = document.getElementById("company").value;
 const name = document.getElementById("name").value;
 const phone = document.getElementById("phone").value;
-const address = document.getElementById("address").value;
 const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
-if(recruiterid=="" || company=="" || name=="" || phone=="" || address=="" || email=="" || password==""){
+if(recruiterid=="" || company=="" || name=="" || phone=="" || email=="" || password==""){
 alert("Please fill all fields");
 return;
 }
@@ -24,37 +23,60 @@ window.location.href="login.html";
 </script>
 </head>
 <body>
-<div class="container">
-<!-- LEFT SECTION : SIGNUP FORM -->
-<div class="left-section">
-<div class="login-card">
-<div class="login-card_1">
-<h2>Recruiter Sign Up</h2>
-<form onsubmit="event.preventDefault(); signupRecruiter();">
-<input type="text" id="recruiterid" placeholder="Recruiter ID" required>
-<input type="text" id="company" placeholder="Company Name" required>
-<input type="text" id="name" placeholder="Recruiter Name" required>
-<input type="tel" id="phone" placeholder="Phone Number" required>
-<input id="address" placeholder="Company Address" required></input>
-<input type="email" id="email" placeholder="Email ID" required>
-<input type="password" id="password" placeholder="Password" required>
-<button class="login-btn" type="submit">Sign Up</button>
-<p class="divider">Already have an account?</p>
-<button class="login-btn" type="button" onclick="window.location.href='login.html'">
-Login
-</button>
-</form>
+<div class="wrapper">
+    <div class="card">
+        <!-- LEFT PANEL (SLIDER) -->
+        <div class="right">
+            <div class="slider">
+                <img src="img_1.jpeg" class="slide active">
+                <img src="img_2.jpeg" class="slide">
+                <img src="img_3.jpeg" class="slide">
+                <img src="img_4.jpeg" class="slide">
+                <img src="img_5.jpeg" class="slide">
+            </div> 
+        </div>
+        <!-- RIGHT PANEL (FORM) -->
+        <div class="left">
+            <div class="logo-row">
+                <img src="place_pro_logo.jpeg">
+                <span>PlacePro</span>
+            </div>
+            <h2>Create Recruiter Account</h2>
+            <p class="sub">Register your company with PlacePro</p>
+            <form onsubmit="event.preventDefault(); signupRecruiter();">
+                <label>Recruiter ID</label>
+                <input type="text" id="recruiterid" placeholder="Enter recruiter ID">
+                <label>Company Name</label>
+                <input type="text" id="company" placeholder="Enter company name">
+                <label>Recruiter Name</label>
+                <input type="text" id="name" placeholder="Enter your name">
+                <label>Phone Number</label>
+                <input type="tel" id="phone" placeholder="Enter phone number">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="Enter email">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+                <button class="primary-btn" type="submit">Sign Up</button>
+                <p class="bottom-text">
+                    Already have an account? 
+                    <span onclick="window.location.href='login.html'">Login</span>
+                </p>
+            </form>
+        </div>
+    </div>
 </div>
-</div>
-</div>
-<!-- RIGHT SECTION : BRANDING -->
-<div class="right-section">
-<div class="branding">
-<img src="../images/PP_Logo.jpeg" alt="PlacePro Logo">
-<h1>PlacePro</h1>
-<p>Where Talent Meets Opportunity</p>
-</div>
-</div>
-</div>
+<!-- SLIDER SCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const slides = document.querySelectorAll(".slide");
+    let index = 0;
+    function showNextSlide() {
+        slides[index].classList.remove("active");
+        index = (index + 1) % slides.length;
+        slides[index].classList.add("active");
+    }
+    setInterval(showNextSlide, 3000);
+});
+</script>
 </body>
 </html>

@@ -1,315 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/jpeg" href="../images/PP_Logo.jpeg">
-<title>Student | PlacePro</title>
-<link rel="stylesheet" href="../css/student.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlacePro | Student Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/student.css">
 </head>
-<body>
-    <header class="top-header">
-        <div class="header-left">
-        <img src="../images/PP_Logo.jpeg" alt="PlacePro Logo" onclick="goHome()" class="logo">
-        </div>
-        <div class="header-center">
-        <h1>SHRI GOVINDRAM SEKSARIA INSTITUTE OF TECHNOLOGY & SCIENCE, INDORE</h1>
-        <p>'NAAC A GRADE' Autonomous Institute | Established 1952</p>
-        </div>
-        <div class="header-right">
-        <button class="logout-btn" onclick="window.location.href='login.html'">Logout</button>
-        </div>
-        </header>
-<main class="main-content">
-<!-- HOME DASHBOARD -->
-<div id="home" class="page-section active">
-<div class="dashboard-grid">
-<div class="dashboard-card" onclick="showPage('notifications')">
-<h3>Notifications</h3>
-<p>Updates from Admin</p>
-</div>
-<div class="dashboard-card" onclick="showPage('applyJob')">
-    <h3>Apply for Job</h3>
-    <p>Browse and apply for available jobs</p>
-    </div>
-<div class="dashboard-card" onclick="showPage('internCert')">
-<h3>Internships & Certifications</h3>
-<p>Upload Internship and Skill Certificates</p>
-</div>
-<div class="dashboard-card" onclick="showPage('resume')">
-<h3>Resume</h3>
-<p>Upload or Update Resume</p>
-</div>
-<div class="dashboard-card" onclick="showPage('applications')">
-<h3>Applications</h3>
-<p>View Job Applications</p>
-</div>
-<div class="dashboard-card" onclick="showPage('profile')">
-<h3>Profile</h3>
-<p>View Student Profile</p>
-</div>
-</div>
-</div>
-<!-- NOTIFICATIONS -->
-<div id="notifications" class="page-section">
-    <button class="back-btn" onclick="goHome()">← Back</button>
-    <h2>Admin Notifications</h2>
-    <ul id="notificationList">
-    </ul>
-    </div>
-<!-- APPLY -->
-<div id="applyJob" class="page-section">
-    <button class="back-btn" onclick="goHome()">← Back</button>
-    <h2>Available Jobs</h2>
-    <table id="jobsTable">    
-    <tr>
-    <th>Company</th>
-    <th>Role</th>
-    <th>Location</th>
-    <th>Action</th>
-    </tr>
-    <tr>
-    <td>TCS</td>
-    <td>Software Engineer</td>
-    <td>Bangalore</td>
-    <td>
-    <button class="apply-btn" onclick="openApplicationForm('TCS','Software Engineer','Bangalore')">
-    Apply
-    </button>
-    </td>
-    </tr>
-    <tr>
-    <td>Infosys</td>
-    <td>System Engineer</td>
-    <td>Pune</td>
-    <td>
-    <button class="apply-btn" onclick="openApplicationForm('Infosys','System Engineer','Pune')">
-    Apply
-    </button>
-    </td>
-    </tr>
-    <tr>
-    <td>Wipro</td>
-    <td>Project Engineer</td>
-    <td>Hyderabad</td>
-    <td>
-    <button class="apply-btn" onclick="openApplicationForm('Wipro','Project Engineer','Hyderabad')">
-    Apply
-    </button>
-    </td>
-    </tr>
-    </table>
-    </div>
-    <div id="jobApplicationForm" class="page-section">
-        <div class="apply-wrapper">
-        <!-- LEFT FORM -->
-        <div class="apply-form-container">
-        <button class="back-btn" onclick="showPage('applyJob')">← Back</button>
-        <h2>Job Application</h2>
-        <form id="applyForm">
-        <label>Company</label>
-        <input type="text" id="formCompany" readonly>
-        <label>Role</label>
-        <input type="text" id="formRole" readonly>
-        <label>Location</label>
-        <input type="text" id="formLocation" readonly>
-        <label>Full Name</label>
-        <input type="text" id="studentName" required>
-        <label>Email</label>
-        <input type="email" id="studentEmail" required>
-        <label>Phone</label>
-        <input type="text" id="studentPhone" required>    
-        <label>CGPA</label>
-        <input type="number" id="studentCgpa" step="0.1" required>
-        <label>Skills</label>
-        <input type="text" id="studentSkills" required>
-        <button type="button" class="submit-btn" onclick="submitApplication()">
-        Submit Application
-        </button>
-        </form>
-        </div>
-        <!-- RIGHT BRANDING -->
-        <div class="apply-brand">
-        <img src="../images/PP_Logo.jpeg" class="apply-logo">
-        <h2>PlacePro</h2>
-        <p>SGSITS Job Application</p>
-        <p class="brand-sub">
-        Where Talent Meets Opportunity 
-        </p>
-        </div>
-        </div>
-        </div>
-    <!-- INTERNSHIPS -->
-    <div id="internCert" class="page-section">
-    <button class="back-btn" onclick="goHome()">← Back</button>
-    <h2>Internships & Certifications</h2>
-    <!-- Internship Upload -->    
-    <div class="upload-container">
-    <h3>Upload Internship Certificate</h3>
-    <div class="upload-row">
-    <input type="file" id="internFile" hidden>
-    <input type="text" id="internFileName" placeholder="No file chosen" readonly>
-    <button class="choose-btn" onclick="document.getElementById('internFile').click()">
-    Choose File
-    </button>
-    <button class="upload-btn" onclick="uploadInternship()">
-    Upload
-    </button>
-    </div>
-    </div>
-    <!-- Certificate Upload -->
-    <div class="upload-container">
-    <h3>Upload Skill Certificate</h3>
-    <div class="upload-row">
-    <input type="file" id="certFile" hidden>
-    <input type="text" id="certFileName" placeholder="No file chosen" readonly>
-    <button class="choose-btn" onclick="document.getElementById('certFile').click()">
-    Choose File
-    </button>
-    <button class="upload-btn" onclick="uploadCertificate()">
-    Upload
-    </button>
-    </div>
-    </div>
-    <table id="internTable">
-        <tr>
-        <th>Type</th>
-        <th>File Name</th>
-        <th>Status</th>
-        <th>View</th>
-        </tr>
-        </table>
-    </div>
-<!-- APPLICATIONS -->
-<div id="applications" class="page-section">
-    <button class="back-btn" onclick="goHome()">← Back</button>
-    <h2>My Applications</h2>    
-    <table id="applicationsTable">
-    <tr>
-    <th>Company</th>
-    <th>Role</th>
-    <th>Location</th>
-    <th>Status</th>
-    </tr>
-    </table>
-    </div>
-<!-- RESUME -->
-    <div id="resume" class="page-section">
-        <button class="back-btn" onclick="goHome()">← Back</button>
-        <h2>Resume Upload</h2>
-        <div class="upload-container">
-        <h3>Upload Resume</h3>
-        <div class="upload-row">
-        <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" hidden>
-        <input type="text" id="resumeFileName" placeholder="No file chosen" readonly>
-        <button class="choose-btn" onclick="document.getElementById('resumeFile').click()">
-        Choose File
-        </button>
-        <button class="upload-btn" onclick="uploadResume()">
-        Upload
-        </button>
-        </div>
-        </div>
-        <table id="resumeTable">
-        <tr>
-        <th>File Name</th>
-        <th>Status</th>
-        <th>View</th>
-        </tr>
-        </table>        
-        </div>
-<!-- PROFILE -->
-<div id="profile" class="page-section">
-    <button class="back-btn" onclick="goHome()">← Back</button>
-    <div class="profile-container">
-    <div class="profile-header">
-        <div class="profile-photo">
-            <img src="student_photo.png" id="studentPhoto">
-            <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="previewPhoto(event)">
-            <button id="uploadPhotoBtn" class="upload-btn" style="display:none" onclick="document.getElementById('photoUpload').click()">
-            Upload Photo
-            </button>
+<body class="bg-white text-black font-sans">
+    <div class="app-shell flex min-h-screen">
+        <nav class="sidebar w-60 bg-black text-white flex flex-col py-10 fixed h-full z-50">
+            <div class="flex items-center gap-3 px-6 mb-12">
+                <div class="w-8 h-8 bg-white flex items-center justify-center">
+                    <div class="w-5 h-5 border-2 border-black"></div>
+                </div>
+                <span class="font-bold text-lg tracking-tighter uppercase">PlacePro</span>
             </div>
-    <div class="profile-info">
-    <h2 id="studentName">Student Name</h2>
-    <p>Class: <span id="studentClass">B.Tech</span></p>
-    <p>Specialization: <span id="studentSpec">Computer Science</span></p>
+            <ul class="flex-grow" id="nav-list">
+                <li class="mb-1"><button onclick="switchPage('home')" class="nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 active-nav" data-page="home"><i data-lucide="layout-dashboard" size="18"></i><span class="uppercase tracking-wider">Overview</span></button></li>
+                <li class="mb-1"><button onclick="switchPage('notifications')" class="nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="notifications"><i data-lucide="bell" size="18"></i><span class="uppercase tracking-wider">Updates</span></button></li>
+                <li class="mb-1"><button onclick="switchPage('jobs')" class="nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="jobs"><i data-lucide="briefcase" size="18"></i><span class="uppercase tracking-wider">Opportunities</span></button></li>
+                <li class="mb-1"><button onclick="switchPage('applied')" class="nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="applied"><i data-lucide="clipboard-check" size="18"></i><span class="uppercase tracking-wider">Applied Records</span></button></li>
+                <li class="mb-1"><button onclick="switchPage('certs')" class="nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="certs"><i data-lucide="award" size="18"></i><span class="uppercase tracking-wider">Education</span></button></li>
+                <li class="mb-1"><button onclick="switchPage('resume')" class="nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="resume"><i data-lucide="file-text" size="18"></i><span class="uppercase tracking-wider">Documents</span></button></li>
+                <li class="mb-1"><button onclick="switchPage('profile')" class="nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="profile"><i data-lucide="user" size="18"></i><span class="uppercase tracking-wider">Profile</span></button></li>
+            </ul>
+            <div class="px-6 mt-auto">
+              <button
+                  id="logout-btn"
+                  onclick="logoutUser()"
+                  class="flex items-center gap-4 text-neutral-400 hover:text-white transition-colors text-sm font-medium uppercase tracking-widest">
+                  <i data-lucide="log-out" size="18"></i>
+                  Exit
+              </button>
+          </div>
+          <script>
+          function logoutUser() {
+              localStorage.removeItem("placeProSession");
+              localStorage.removeItem("loggedInUser");
+              window.location.href = "login.html";
+          }
+          </script>
+        </nav>
+        <main class="main-content ml-60 flex-grow p-10 lg:p-14">
+            <header class="flex justify-between items-end mb-16 pb-6 border-b border-neutral-200 gap-6">
+                <div>
+                    <p class="text-[10px] font-black tracking-[0.2em] text-neutral-400 uppercase mb-1">Student Portal</p>
+                    <h1 id="page-title" class="text-3xl font-black uppercase tracking-tighter">Dashboard</h1>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs font-bold uppercase user-name-display">John Doe</p>
+                        <p class="text-[10px] text-neutral-500 font-medium user-roll-display">0101CS211045</p>
+                    </div>
+                    <img id="profile-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=John%20Doe" class="w-10 h-10 rounded-full border border-black p-0.5" alt="Avatar">
+                </div>
+            </header>
+
+            <div id="content-area"></div>
+        </main>
     </div>
-    <div class="edit-section">
-        <button class="edit-btn" id="editBtn" onclick="enableEdit()">Edit Profile</button>
-        <button class="save-btn" id="saveBtn" onclick="saveProfile()" style="display:none">
-        Save Profile
-        </button>
-        </div>
-    </div>
-    <div class="profile-details">
-    <div class="profile-grid">
-    <div class="profile-item">
-    <label>Mobile Number</label>
-    <input type="text" value="9876543210" disabled>
-    </div>
-    <div class="profile-item">
-    <label>Father's Name</label>
-    <input type="text" value="Father Name" disabled>
-    </div>
-    <div class="profile-item">
-    <label>Father Mobile Number</label>
-    <input type="text" value="9876543211" disabled>
-    </div>
-    <div class="profile-item">
-    <label>Mother's Name</label>
-    <input type="text" value="Mother Name" disabled>
-    </div>
-    <div class="profile-item">
-    <label>Mother Mobile Number</label>
-    <input type="text" value="9876543212" disabled>
-    </div>
-    <div class="profile-item">
-    <label>Personal Email</label>
-    <input type="email" value="student@gmail.com" disabled>
-    </div>
-    <div class="profile-item">
-    <label>College Email</label>
-    <input type="email" value="student@college.edu" disabled>
-    </div>
-    <div class="profile-item">
-    <label>Date of Birth</label>
-    <input type="date" value="2002-01-01" disabled>
-    </div>
-    <div class="profile-item">
-    <label>Class</label>
-    <input type="text" value="Final Year" disabled>
-    </div>
-    <div class="profile-item">
-    <label>Section</label>
-    <input type="text" value="A" disabled>
-    </div>
-    <div class="profile-item">
-    <label>Specialization</label>
-    <input type="text" value="Computer Science" disabled>
-    </div>
-    <div class="profile-item">
-    <label>ABC ID</label>
-    <input type="text" value="ABC123456" disabled>
-    </div>
-    <div class="profile-item">
-    <label>Aadhar Card</label>
-    <input type="text" value="XXXX-XXXX-1234" disabled>
-    </div>
-    </div>
-    <div class="signature-section">
-        <h3>Student Signature</h3>
-        <img src="signature.png" class="signature-img" id="studentSignature">
-        <input type="file" id="signatureUpload" accept="image/*" style="display:none" onchange="previewSignature(event)">
-        <button id="uploadSignatureBtn" class="upload-btn" style="display:none"
-        onclick="document.getElementById('signatureUpload').click()">
-        Upload Signature
-        </button>
-        </div>
-    </div>
-    </div>
-    </div>
-    </div>  
-</main>
-<script src="../js/student.js"></script>
+    <div id="modal-container" class="hidden"></div>
+    <script src="../js/student.js"></script>
 </body>
 </html>

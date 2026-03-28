@@ -1,19 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/jpeg" href="../images/PP_Logo.jpeg">
-<link rel="stylesheet" href="../css/splash.css">
-<title>Place Pro</title>
+    <link rel="icon" href="../images/pp.jpeg" type="image/jpeg">
+    <title>PlacePro</title>
+    <link rel="stylesheet" href="../css/splash.css">
 </head>
 <body>
-<img src="../images/PP_Logo.jpeg" alt="Institute Logo">
-<h1>Place<span>Pro</span></h1>
-<p>Where Talent Meets Opportunity</p>
+<!--Background Video -->
+<video autoplay muted loop class="video-bg">
+    <source src="../video/splash.mp4" type="video/mp4">
+</video>
+<!-- Overlay -->
+<div class="overlay"></div>
+<!-- Content -->
+<div class="blur-strip">
+<div class="content" id="content">
+    <img src="../images/PP_logo.jpeg" alt="Logo">
+    <p>Where Talent Meets Opportunity</p>
+</div>
+</div>
 <script>
 setTimeout(() => {
+    document.getElementById("content").classList.add("fade-out");
+}, 4500);
+setTimeout(() => {
     window.location.href = "login.html";
-}, 6000);
+}, 4500);
 </script>
 </body>
 </html>

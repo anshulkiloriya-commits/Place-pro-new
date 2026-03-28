@@ -1,55 +1,57 @@
-body {
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+body {
     height: 100vh;
+    overflow: hidden;
+}
+/* Video Background */
+.video-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+    z-index: -2;
+}
+/* Dark overlay (important for readability) */
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+/* Content */
+.content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
-    
-    background: linear-gradient(135deg,#1f2c7a, #0f1445);
-    font-family: "Segoe UI", sans-serif;
-    color: white;
+    align-items: center;
     text-align: center;
+    color: white;
+    z-index: 1;
 }
-
-/* Bigger and smoother image */
-img {
-    height: 300px;
+/* Logo */
+.content img {
     width: 300px;
-    object-fit: contain;
     margin-bottom: 20px;
-    animation: fadeIn 1.5s ease-in-out;
+    animation: logoflex ease-in-out step-start;
 }
-
-/* Heading */
-h1 {
-    font-size: 90px;
-    margin-top: -10px;
-    letter-spacing: 2px;
-    font-weight: 600;
-    color: white; /* Ensures PRO stays same color */
-    animation: fadeIn 2s ease-in-out;
-}
-
-/* If you're using span for PRO */
-h1 span {
-    color: inherit; /* Makes PRO same color as rest */
-}
-
+/* Tagline */
 p {
-    opacity: 0.8;
-    font-size: 18px;
-    margin-top:-30px;
-}
-
-/* Smooth animation */
-@keyframes fadeIn {
-    from { 
-        opacity: 0; 
-        transform: scale(0.9); 
-    }
-    to { 
-        opacity: 1; 
-        transform: scale(1); 
-    }
+    font-size: 40px;
+    font-family: fantasy;
+    font-style: normal;
+    font-weight: bold;
+    margin-top: 10px;
+    color:white;
 }
