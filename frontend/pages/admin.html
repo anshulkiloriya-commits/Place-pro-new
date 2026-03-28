@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlacePro | Admin Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="bg-white text-black font-sans">
+  <div class="admin-shell flex min-h-screen">
+    <nav class="admin-sidebar w-60 bg-black text-white flex flex-col py-10 fixed h-full z-50">
+      <div class="flex items-center gap-3 px-6 mb-12">
+        <div class="w-8 h-8 bg-white flex items-center justify-center">
+          <div class="w-5 h-5 border-2 border-black"></div>
+        </div>
+        <span class="font-bold text-lg tracking-tighter uppercase">PlacePro</span>
+      </div>
+      <ul class="flex-grow">
+        <li class="mb-1"><button onclick="switchAdminPage('home')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 admin-active-nav" data-page="home"><i data-lucide="layout-dashboard" size="18"></i><span class="uppercase tracking-wider">Overview</span></button></li>
+        <li class="mb-1"><button onclick="switchAdminPage('updates')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="updates"><i data-lucide="bell" size="18"></i><span class="uppercase tracking-wider">Send Updates</span></button></li>
+        <li class="mb-1"><button onclick="switchAdminPage('applications')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="applications"><i data-lucide="clipboard-check" size="18"></i><span class="uppercase tracking-wider">Applied Records</span></button></li>
+        <li class="mb-1"><button onclick="switchAdminPage('credentials')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="credentials"><i data-lucide="award" size="18"></i><span class="uppercase tracking-wider">Credentials</span></button></li>
+        <li class="mb-1"><button onclick="switchAdminPage('documents')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="documents"><i data-lucide="file-text" size="18"></i><span class="uppercase tracking-wider">Documents</span></button></li>
+        <li class="mb-1"><button onclick="switchAdminPage('students')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="students"><i data-lucide="user" size="18"></i><span class="uppercase tracking-wider">Student Data</span></button></li>
+        <li class="mb-1"><button onclick="switchAdminPage('opportunities')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="opportunities"><i data-lucide="briefcase" size="18"></i><span class="uppercase tracking-wider">P Opportunities</span></button></li>
+      </ul>
+      <div class="px-6 mt-auto">
+        <button id="admin-logout-btn" class="flex items-center gap-4 text-neutral-400 hover:text-white transition-colors text-sm font-medium uppercase tracking-widest">
+          <i data-lucide="log-out" size="18"></i>
+          Exit 
+        </button>
+      </div>
+    </nav>
+    <main class="admin-main ml-60 flex-grow p-10 lg:p-14">
+      <header class="flex justify-between items-end mb-16 pb-6 border-b border-neutral-200 gap-6">
+        <div>
+          <p class="text-[10px] font-black tracking-[0.2em] text-neutral-400 uppercase mb-1">Admin Portal</p>
+          <h1 id="admin-page-title" class="text-3xl font-black uppercase tracking-tighter">Dashboard</h1>
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="text-right hidden sm:block">
+            <p class="text-xs font-bold uppercase">Admin Office</p>
+            <p class="text-[10px] text-neutral-500 font-medium">Training & Placement Cell</p>
+          </div>
+          <div class="w-10 h-10 rounded-full border border-black flex items-center justify-center bg-neutral-50">
+            <i data-lucide="shield-check" size="18"></i>
+          </div>
+        </div>
+      </header>
+      <div id="admin-content-area"></div>
+    </main>
+  </div>
+  <div id="admin-modal-container" class="hidden"></div>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

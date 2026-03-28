@@ -1,0 +1,74 @@
+.admin-animate-in {
+  animation: adminFadeIn 0.35s ease-out;
+}
+@keyframes adminFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.admin-active-nav {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff !important;
+  border-color: #fff !important;
+}
+.admin-nav-btn:hover:not(.admin-active-nav) {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+.admin-stat-card:hover .admin-stat-icon,
+.admin-action-card:hover .admin-action-icon,
+.admin-doc-card:hover .admin-doc-icon {
+  transform: scale(1.08);
+}
+.admin-modal-backdrop {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+textarea:focus,
+input:focus,
+select:focus {
+  outline: none;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #171717;
+}
+.admin-line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #000;
+}
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+  .admin-shell {
+    flex-direction: column;
+  }
+  .admin-main {
+    margin-left: 0;
+  }
+}
+@media (max-width: 640px) {
+  .admin-main {
+    padding: 1.5rem;
+  }
+}
