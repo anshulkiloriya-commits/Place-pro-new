@@ -1,0 +1,30 @@
+.DS_Store
+
+# Editor settings
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code
+.vscode/
+
+# Backend build outputs and local logs
+backend/placePro/target/
+backend/placePro/codex-*.log
+backend/placePro/codex-debug.*
+
+# Backend local config / secrets
+backend/placePro/src/main/resources/application.properties
+
+# Java / Maven metadata
+backend/placePro/.classpath
+backend/placePro/.factorypath
+backend/placePro/.project
+backend/placePro/.settings/
+backend/placePro/.apt_generated/
+backend/placePro/.springBeans
+backend/placePro/.sts4-cache/
+
+# Nested repo backup after flattening
+backend/placePro/.git.backup/
