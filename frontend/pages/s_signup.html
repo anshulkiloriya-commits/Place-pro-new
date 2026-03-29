@@ -2,22 +2,46 @@
 <html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/jpeg" href="place_pro_logo.jpeg">
+<link rel="icon" type="image/jpeg" href="../images/PP_logo.jpeg">
 <title>PlacePro Student Sign Up</title>
-<link rel="stylesheet" href="login.css">
+<link rel="stylesheet" href="../css/login.css">
+<script src="../js/api.js"></script>
 <script>
-function signupStudent(){
-const enroll = document.getElementById("enroll").value;
-const name = document.getElementById("name").value;
-const phone = document.getElementById("phone").value;
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
-if(enroll=="" || name=="" || phone=="" || email=="" || password==""){
-alert("Please fill all fields");
-return;
-}
-alert("Successfully Signed Up");
-window.location.href="login.html";
+async function signupStudent() {
+
+  // Read all input values from the signup form.
+  const enroll = document.getElementById("enroll").value;
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if(enroll=="" || name=="" || phone=="" || email=="" || password==""){
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+    // Only create the login account during signup.
+    // The detailed student profile can be completed later from the student portal.
+    await placeProApi("/api/register", {
+      method: "POST",
+      body: JSON.stringify({
+        // These keys match the backend User model.
+        name: name,
+        email: email,
+        password: password,
+        role: "STUDENT"
+      })
+    });
+
+    alert("Signup Successful ✅");
+    window.location.href = "login.html";
+
+  } catch (error) {
+    console.error(error);
+    alert(error.message || "Server not connected ❌");
+  }
 }
 </script>
 </head>
@@ -27,17 +51,17 @@ window.location.href="login.html";
         <!-- LEFT PANEL (SLIDER - FROM LOGIN RIGHT) -->
         <div class="right">
             <div class="slider">
-                <img src="img_1.jpeg" class="slide active">
-                <img src="img_2.jpeg" class="slide">
-                <img src="img_3.jpeg" class="slide">
-                <img src="img_4.jpeg" class="slide">
-                <img src="img_5.jpeg" class="slide">
+                <img src="../images/img_1.jpeg" class="slide active">
+                <img src="../images/img_2.jpeg" class="slide">
+                <img src="../images/img_3.jpeg" class="slide">
+                <img src="../images/img_4.jpeg" class="slide">
+                <img src="../images/img_5.jpeg" class="slide">
             </div>  
         </div>
         <!-- RIGHT PANEL (FORM - FROM LOGIN LEFT) -->
         <div class="left">
             <div class="logo-row">
-                <img src="place_pro_logo.jpeg">
+                <img src="../images/PP_logo.jpeg">
                 <span>PlacePro</span>
             </div>
             <h2>Create Your Account</h2>

@@ -2,26 +2,55 @@
 <html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/jpeg" href="pp.jpeg">
+<link rel="icon" type="image/jpeg" href="../images/PP_logo.jpeg">
 <title>PlacePro Login</title>
 <link rel="stylesheet" href="../css/login.css">
 <!-- Google Script -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="../js/api.js"></script>
 <script>
+// Route each user type to its dashboard after login succeeds.
+function redirectByRole(role) {
+    const normalizedRole = String(role || "").toLowerCase();
+    if (normalizedRole === "student") {
+        window.location.href = "student.html";
+    } 
+    else if (normalizedRole === "admin") {
+        window.location.href = "admin.html";
+    } 
+    else if (normalizedRole === "recruiter") {
+        window.location.href = "recruiter.html";
+    }
+}
+// Build one consistent session object for the whole frontend.
+function buildSession(payload) {
+    const normalizedRole = String(payload.role || "Student").toLowerCase();
+    return {
+        // Backend user id from the users table.
+        id: payload.id || null,
+        // Student id is used later to load /api/students/{id}.
+        studentId: payload.studentId || null,
+        // Use name from backend if available, otherwise fallback to email prefix.
+        name: payload.name || (payload.email ? payload.email.split("@")[0] : "User"),
+        email: payload.email || "",
+        role: normalizedRole === "student" ? "Student" : normalizedRole === "admin" ? "Admin" : normalizedRole === "recruiter" ? "Recruiter" : "Student",
+        photo: payload.photo || ""
+    };
+}
 // ✅ GOOGLE LOGIN HANDLER
 function handleCredentialResponse(response) {
     const data = parseJwt(response.credential);
-    localStorage.setItem("loggedInUser", data.name);
     const role = document.getElementById("selectedRole").value;
-    if (role === "Student") {
-        window.location.href = "student.html";
-    } 
-    else if (role === "Admin (TPO)") {
-        window.location.href = "admin.html";
-    } 
-    else if (role === "Recruiter") {
-        window.location.href = "recruiter.html";
-    }
+    // Google login still creates a frontend session directly.
+    const session = buildSession({
+        name: data.name,
+        email: data.email,
+        role: role,
+        photo: data.picture || ""
+    });
+    localStorage.setItem("loggedInUser", session.name);
+    localStorage.setItem("placeProSession", JSON.stringify(session));
+    redirectByRole(role);
 }
 // ✅ JWT PARSER
 function parseJwt(token) {
@@ -41,15 +70,34 @@ function setRole(button, roleName) {
     document.getElementById("selectedRole").value = roleName;
 }
 // ✅ NORMAL LOGIN
-function normalLogin() {
+async function normalLogin() {
+    // Read values entered in the login form.
     const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const role = document.getElementById("selectedRole").value;
     if (!email) {
         alert("Please enter email");
         return;
     }
-    const name = email.split("@")[0];
-    localStorage.setItem("loggedInUser", name);
-    window.location.href = "student.html";
+    if (!password) {
+        alert("Please enter password");
+        return;
+    }
+    try {
+        // Real login call to the backend instead of the previous local-only redirect.
+        const payload = await placeProApi("/api/login", {
+            method: "POST",
+            // Send the same field names the Spring Boot LoginRequest expects.
+            body: JSON.stringify({ email, password, role })
+        });
+        // Save backend response in localStorage so other pages know who is logged in.
+        const session = buildSession(payload);
+        localStorage.setItem("loggedInUser", session.name);
+        localStorage.setItem("placeProSession", JSON.stringify(session));
+        redirectByRole(session.role);
+    } catch (error) {
+        alert(error.message || "Login failed");
+    }
 }
 // ✅ SIGNUP REDIRECT
 function goToSignup() {
@@ -57,7 +105,7 @@ function goToSignup() {
     if (role === "Student") {
         window.location.href = "s_signup.html";
     } 
-    else if (role === "Admin (TPO)") {
+    else if (role === "Admin") {
         window.location.href = "a_signup.html";
     } 
     else if (role === "Recruiter") {
@@ -92,14 +140,14 @@ function goToSignup() {
             <!-- ROLES -->
             <div class="roles">
                 <button class="role active" onclick="setRole(this,'Student')">Student</button>
-                <button class="role" onclick="setRole(this,'Admin (TPO)')">Admin</button>
+                <button class="role" onclick="setRole(this,'Admin')">Admin</button>
                 <button class="role" onclick="setRole(this,'Recruiter')">Recruiter</button>
             </div>
             <input type="hidden" id="selectedRole" value="Student">
             <label>Email</label>
             <input type="email" id="email" placeholder="Enter your email">
             <label>Password</label>
-            <input type="password" placeholder="Enter password">
+            <input type="password" id="password" placeholder="Enter password">
             <p class="forgot">Forgot password?</p>
             <button class="primary-btn" onclick="normalLogin()">Login</button>
             <!-- GOOGLE LOGIN -->

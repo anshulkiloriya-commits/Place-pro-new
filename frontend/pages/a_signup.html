@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/jpeg" href="place_pro_logo.jpeg">
+<link rel="icon" type="image/jpeg" href="../images/PP_logo.jpeg">
 <title>PlacePro Admin Sign Up</title>
-<link rel="stylesheet" href="login.css">
+<link rel="stylesheet" href="../css/login.css">
+<script src="../js/api.js"></script>
 <script>
-function signupAdmin(){
+async function signupAdmin(){
 const staffid = document.getElementById("staffid").value;
+// These values come from the admin signup form.
 const name = document.getElementById("name").value;
 const phone = document.getElementById("phone").value;
 const email = document.getElementById("email").value;
@@ -16,8 +18,23 @@ if(staffid=="" || name=="" || phone=="" || email=="" || password==""){
 alert("Please fill all fields");
 return;
 }
+try {
+// Admin signup now uses the same backend registration API as login.
+await placeProApi("/api/register", {
+method: "POST",
+body: JSON.stringify({
+name: name,
+email: email,
+password: password,
+// Role tells the backend which type of user is being created.
+role: "ADMIN"
+})
+});
 alert("Admin Successfully Signed Up");
 window.location.href="login.html";
+} catch (error) {
+alert(error.message || "Signup failed");
+}
 }
 </script>
 </head>
@@ -27,17 +44,17 @@ window.location.href="login.html";
         <!-- LEFT PANEL (SLIDER) -->
         <div class="right">
             <div class="slider">
-                <img src="img_1.jpeg" class="slide active">
-                <img src="img_2.jpeg" class="slide">
-                <img src="img_3.jpeg" class="slide">
-                <img src="img_4.jpeg" class="slide">
-                <img src="img_5.jpeg" class="slide">
+                <img src="../images/img_1.jpeg" class="slide active">
+                <img src="../images/img_2.jpeg" class="slide">
+                <img src="../images/img_3.jpeg" class="slide">
+                <img src="../images/img_4.jpeg" class="slide">
+                <img src="../images/img_5.jpeg" class="slide">
             </div> 
         </div>
         <!-- RIGHT PANEL (FORM) -->
         <div class="left">
             <div class="logo-row">
-                <img src="place_pro_logo.jpeg">
+                <img src="../images/PP_logo.jpeg">
                 <span>PlacePro</span>
             </div>
             <h2>Create Admin Account</h2>

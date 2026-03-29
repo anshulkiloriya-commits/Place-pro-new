@@ -14,20 +14,20 @@ const defaultNotifications = [
 let notifications = [];
 const profile = {
   name: session?.name || 'John Doe',
-  rollNo: '0101CS211045',
-  mobile: '+91 9876543210',
-  fatherName: 'Robert Doe',
-  fatherMobile: '+91 9876543211',
-  motherName: 'Jane Doe',
-  motherMobile: '+91 9876543212',
-  personalEmail: session?.email || 'john.personal@gmail.com',
-  collegeEmail: session?.email || 'student@sgsits.ac.in',
-  dob: '2003-05-15',
-  className: 'B.Tech IV Year',
-  section: 'A',
-  abcId: '123-456-789-012',
-  aadhaar: 'XXXX-XXXX-4567',
-  pan: 'ABCDE1234F',
+  rollNo: session?.studentId || '',
+  mobile: '',
+  fatherName: '',
+  fatherMobile: '',
+  motherName: '',
+  motherMobile: '',
+  personalEmail: session?.email || '',
+  collegeEmail: session?.email || '',
+  dob: '',
+  className: '',
+  section: '',
+  abcId: '',
+  aadhaar: '',
+  pan: '',
   signature: null,
   studentImage: session?.photo || ''
 };
@@ -46,6 +46,7 @@ const jobPostings = [
 ];
 function getSession() {
   try {
+    // Read the logged-in user details saved during login.
     const raw = localStorage.getItem('placeProSession');
     return raw ? JSON.parse(raw) : null;
   } catch (error) {
@@ -85,7 +86,8 @@ function refreshNotifications() {
   notifications = sharedUpdates.length > 0 ? sharedUpdates : defaultNotifications;
 }
 function requireStudentSession() {
-  if (!session || session.role !== 'Student') {
+  // Only students should open the student dashboard.
+  if (!session || String(session.role || '').toLowerCase() !== 'student') {
     window.location.href = 'login.html';
     return false;
   }
@@ -95,14 +97,156 @@ function persistSession() {
   if (!session) {
     return;
   }
+  // Keep the browser session aligned with the latest student profile values.
   const updatedSession = {
     ...session,
+    studentId: profile.rollNo || session.studentId || null,
     name: profile.name,
     email: profile.personalEmail || profile.collegeEmail,
     photo: profile.studentImage || session.photo || ''
   };
+  session.studentId = updatedSession.studentId;
+  session.name = updatedSession.name;
+  session.email = updatedSession.email;
+  session.photo = updatedSession.photo;
   localStorage.setItem('loggedInUser', updatedSession.name);
   localStorage.setItem('placeProSession', JSON.stringify(updatedSession));
+}
+// Preserve student profile data so the other dashboards can still read it locally.
+function syncStudentProfileToStorage() {
+  localStorage.setItem('placeProStudentProfile', JSON.stringify(profile));
+}
+// Preserve uploaded document metadata for the existing admin/recruiter views.
+function syncDocumentsToStorage() {
+  const documentsForStorage = Object.fromEntries(
+    Object.entries(documentsData).map(([key, value]) => ([key, { ...value, key }]))
+  );
+  localStorage.setItem('placeProStudentDocuments', JSON.stringify(documentsForStorage));
+}
+// Preserve application data for the existing admin/recruiter views.
+function syncApplicationsToStorage() {
+  localStorage.setItem('placeProApplications', JSON.stringify(appliedItems));
+}
+function applyStudentProfile(student) {
+  if (!student) {
+    return;
+  }
+
+  // Map backend student fields into the frontend profile object.
+  // Left side = frontend field used by the page.
+  // Right side = field name returned by Spring Boot.
+  profile.rollNo = student.enrollmentNo || profile.rollNo;
+  profile.name = student.fullName || profile.name;
+  profile.mobile = student.mobile || profile.mobile;
+  profile.personalEmail = student.personalEmail || profile.personalEmail;
+  profile.collegeEmail = student.collegeEmail || profile.collegeEmail;
+  profile.dob = student.dob || profile.dob;
+  profile.fatherName = student.fatherName || profile.fatherName;
+  profile.fatherMobile = student.fatherMobile || profile.fatherMobile;
+  profile.motherName = student.motherName || profile.motherName;
+  profile.motherMobile = student.motherMobile || profile.motherMobile;
+  profile.className = student.className || profile.className;
+  profile.section = student.section || profile.section;
+  profile.abcId = student.abcId || profile.abcId;
+  profile.aadhaar = student.aadharNo || profile.aadhaar;
+  profile.pan = student.panNo || profile.pan;
+  profile.studentImage = student.studentImage || profile.studentImage;
+
+  if (student.enrollmentNo) {
+    session.studentId = student.enrollmentNo;
+  }
+
+  persistSession();
+  syncStudentProfileToStorage();
+}
+function createStudentPayload() {
+  // Map frontend form fields back into the backend Student entity shape.
+  return {
+    enrollmentNo: profile.rollNo,
+    fullName: profile.name || 'Not Provided',
+    personalEmail: profile.personalEmail || null,
+    collegeEmail: profile.collegeEmail || null,
+    mobile: profile.mobile || null,
+    dob: profile.dob || null,
+    fatherName: profile.fatherName || null,
+    fatherMobile: profile.fatherMobile || null,
+    motherName: profile.motherName || null,
+    motherMobile: profile.motherMobile || null,
+    className: profile.className || null,
+    section: profile.section || null,
+    abcId: profile.abcId || null,
+    aadharNo: profile.aadhaar || null,
+    panNo: profile.pan || null,
+    studentImage: profile.studentImage || null
+  };
+}
+async function loadStudentProfile() {
+  if (!session?.studentId) {
+    // If we do not know the student id yet, skip backend loading for now.
+    syncStudentProfileToStorage();
+    return;
+  }
+
+  try {
+    // Load the student profile after login using the student id from session.
+    const student = await placeProApi(`/api/students/${encodeURIComponent(session.studentId)}`);
+    applyStudentProfile(student);
+  } catch (error) {
+    console.error('Unable to load student profile', error);
+    syncStudentProfileToStorage();
+  }
+}
+async function saveStudentProfile() {
+  if (!profile.rollNo) {
+    alert('Student roll number is required to save profile.');
+    return false;
+  }
+  if (!/^[0-9]{4}[A-Z]{2}[0-9]{6}$/.test(profile.rollNo)) {
+    alert('Student ID must match format 0801CA251022.');
+    return false;
+  }
+  if (profile.mobile && !/^[0-9]{10}$/.test(profile.mobile)) {
+    alert('Phone number must be exactly 10 digits.');
+    return false;
+  }
+  if (profile.fatherMobile && !/^[0-9]{10}$/.test(profile.fatherMobile)) {
+    alert("Father's mobile number must be exactly 10 digits.");
+    return false;
+  }
+  if (profile.motherMobile && !/^[0-9]{10}$/.test(profile.motherMobile)) {
+    alert("Mother's mobile number must be exactly 10 digits.");
+    return false;
+  }
+  if (profile.abcId && !/^[0-9]{12}$/.test(profile.abcId)) {
+    alert('ABC ID must be exactly 12 digits.');
+    return false;
+  }
+  if (profile.aadhaar && !/^[0-9]{12}$/.test(profile.aadhaar)) {
+    alert('Aadhaar number must be exactly 12 digits.');
+    return false;
+  }
+  if (profile.pan && !/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(profile.pan)) {
+    alert('PAN number must be in format ABCDE1234F.');
+    return false;
+  }
+  if (!profile.collegeEmail && !profile.personalEmail) {
+    alert('Please provide at least one email address in the profile.');
+    return false;
+  }
+
+  try {
+    // Save profile edits back to the Spring Boot API.
+    const savedProfile = await placeProApi(`/api/students/${encodeURIComponent(profile.rollNo)}`, {
+      method: 'PUT',
+      // Send the full edited profile in backend format.
+      body: JSON.stringify(createStudentPayload())
+    });
+    applyStudentProfile(savedProfile);
+    return true;
+  } catch (error) {
+    alert(error.message || 'Unable to save profile right now.');
+    return false;
+  }
 }
 function escapeHtml(value) {
   return String(value)
@@ -734,9 +878,11 @@ function renderModal() {
 function bindProfileInputs() {
   document.querySelectorAll('.profile-input').forEach((input) => {
     input.addEventListener('input', (event) => {
+      // Update the in-memory profile immediately while the user types.
       profile[event.target.dataset.profileKey] = event.target.value;
       updateHeader();
       persistSession();
+      syncStudentProfileToStorage();
     });
   });
   const imageInput = document.getElementById('student-image-input');
@@ -786,8 +932,10 @@ function handleStudentImageUpload(event) {
   }
   const reader = new FileReader();
   reader.onload = () => {
+    // Save the selected image as a base64 data URL for preview/storage.
     profile.studentImage = reader.result;
     persistSession();
+    syncStudentProfileToStorage();
     updateHeader();
     renderContent();
   };
@@ -806,7 +954,9 @@ function handleDocumentUpload(event) {
 
   documentsData[docKey].fileName = file.name;
   documentsData[docKey].fileType = file.type || '';
+  // Create a temporary browser URL so the uploaded file can be previewed.
   documentsData[docKey].fileUrl = URL.createObjectURL(file);
+  syncDocumentsToStorage();
   renderContent();
 }
 function handleApplicationResumeUpload(event) {
@@ -822,6 +972,7 @@ function handleApplicationResumeUpload(event) {
   applicationDraft.resumeName = file.name;
   applicationDraft.resumeType = file.type || '';
   applicationDraft.resumeUrl = URL.createObjectURL(file);
+  syncDocumentsToStorage();
   renderModal();
 }
 function viewDocument(docKey) {
@@ -902,11 +1053,22 @@ function switchPage(pageId) {
   updateHeader();
   renderContent();
 }
-function toggleEditProfile() {
-  isEditing = !isEditing;
-  if (!isEditing) {
+async function toggleEditProfile() {
+  if (isEditing) {
+    // When the user clicks Save, push the edited profile to the backend first.
+    const saved = await saveStudentProfile();
+    if (!saved) {
+      return;
+    }
     persistSession();
+    syncStudentProfileToStorage();
+    isEditing = false;
+    renderContent();
+    return;
   }
+
+  // First click switches the profile page into editable mode.
+  isEditing = true;
   renderContent();
 }
 function openApplyModal(jobId) {
@@ -962,7 +1124,10 @@ function handleApply() {
     documentsData.resume.fileName = applicationDraft.resumeName;
     documentsData.resume.fileUrl = applicationDraft.resumeUrl;
     documentsData.resume.fileType = applicationDraft.resumeType || '';
+    syncDocumentsToStorage();
   }
+  // Store submitted applications locally so admin/recruiter pages can keep showing them.
+  syncApplicationsToStorage();
   selectedJob = null;
   applicationDraft = null;
   activePage = 'applied';
@@ -986,10 +1151,14 @@ window.viewApplicationResume = viewApplicationResume;
 window.viewAppliedRecord = viewAppliedRecord;
 window.closeAppliedRecordView = closeAppliedRecordView;
 window.viewAppliedResume = viewAppliedResume;
-window.onload = () => {
+window.onload = async () => {
   if (!requireStudentSession()) {
     return;
   }
+  // Restore local dashboard data, then fetch the latest backend profile.
+  syncDocumentsToStorage();
+  syncApplicationsToStorage();
+  await loadStudentProfile();
   bindStaticEvents();
   updateHeader();
   switchPage('home');

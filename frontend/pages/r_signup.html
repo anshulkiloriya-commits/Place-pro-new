@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/jpeg" href="place_pro_logo.jpeg">
+<link rel="icon" type="image/jpeg" href="../images/PP_logo.jpeg">
 <title>PlacePro Recruiter Sign Up</title>
-<link rel="stylesheet" href="login.css">
+<link rel="stylesheet" href="../css/login.css">
+<script src="../js/api.js"></script>
 <script>
-function signupRecruiter(){
+async function signupRecruiter(){
+// These values come from the recruiter signup form.
 const recruiterid = document.getElementById("recruiterid").value;
 const company = document.getElementById("company").value;
 const name = document.getElementById("name").value;
@@ -17,8 +19,24 @@ if(recruiterid=="" || company=="" || name=="" || phone=="" || email=="" || passw
 alert("Please fill all fields");
 return;
 }
+try {
+// Recruiter signup now saves a real backend user account.
+await placeProApi("/api/register", {
+method: "POST",
+body: JSON.stringify({
+// Recruiter id and company are currently kept only in the form flow.
+// The backend user table currently stores the common user fields below.
+name: name,
+email: email,
+password: password,
+role: "RECRUITER"
+})
+});
 alert("Recruiter Successfully Signed Up");
 window.location.href="login.html";
+} catch (error) {
+alert(error.message || "Signup failed");
+}
 }
 </script>
 </head>
@@ -28,17 +46,17 @@ window.location.href="login.html";
         <!-- LEFT PANEL (SLIDER) -->
         <div class="right">
             <div class="slider">
-                <img src="img_1.jpeg" class="slide active">
-                <img src="img_2.jpeg" class="slide">
-                <img src="img_3.jpeg" class="slide">
-                <img src="img_4.jpeg" class="slide">
-                <img src="img_5.jpeg" class="slide">
+                <img src="../images/img_1.jpeg" class="slide active">
+                <img src="../images/img_2.jpeg" class="slide">
+                <img src="../images/img_3.jpeg" class="slide">
+                <img src="../images/img_4.jpeg" class="slide">
+                <img src="../images/img_5.jpeg" class="slide">
             </div> 
         </div>
         <!-- RIGHT PANEL (FORM) -->
         <div class="left">
             <div class="logo-row">
-                <img src="place_pro_logo.jpeg">
+                <img src="../images/PP_logo.jpeg">
                 <span>PlacePro</span>
             </div>
             <h2>Create Recruiter Account</h2>
