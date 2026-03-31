@@ -1,0 +1,143 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.3)
+
+2026-04-01T01:02:57.318+05:30  INFO 26124 --- [placepro] [           main] com.placepro.PlaceproApplication         : Starting PlaceproApplication v0.0.1-SNAPSHOT using Java 25.0.2 with PID 26124 (C:\Users\vansh\OneDrive\Desktop\project\Place-pro-new\backend\placePro\target\place1-0.0.1-SNAPSHOT.jar started by vansh in C:\Users\vansh\OneDrive\Desktop\project\Place-pro-new\backend\placePro\target)
+2026-04-01T01:02:57.325+05:30  INFO 26124 --- [placepro] [           main] com.placepro.PlaceproApplication         : No active profile set, falling back to 1 default profile: "default"
+2026-04-01T01:02:58.130+05:30  INFO 26124 --- [placepro] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-01T01:02:58.229+05:30  INFO 26124 --- [placepro] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 57 ms. Found 5 JPA repository interfaces.
+2026-04-01T01:02:58.807+05:30  INFO 26124 --- [placepro] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-04-01T01:02:58.852+05:30  INFO 26124 --- [placepro] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-01T01:02:58.853+05:30  INFO 26124 --- [placepro] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
+2026-04-01T01:02:58.880+05:30  INFO 26124 --- [placepro] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1497 ms
+2026-04-01T01:02:59.139+05:30  INFO 26124 --- [placepro] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-04-01T01:02:59.221+05:30  INFO 26124 --- [placepro] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.4.Final
+2026-04-01T01:02:59.836+05:30  INFO 26124 --- [placepro] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-01T01:02:59.900+05:30  INFO 26124 --- [placepro] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-01T01:03:00.305+05:30  INFO 26124 --- [placepro] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@336d28a1
+2026-04-01T01:03:00.321+05:30  INFO 26124 --- [placepro] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-01T01:03:00.416+05:30  INFO 26124 --- [placepro] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/placepro]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.1
+	Default catalog/schema: placepro/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-01T01:03:01.588+05:30  INFO 26124 --- [placepro] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-01T01:03:01.970+05:30  INFO 26124 --- [placepro] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-01T01:03:02.556+05:30  INFO 26124 --- [placepro] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-01T01:03:03.817+05:30  WARN 26124 --- [placepro] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-01T01:03:05.672+05:30  INFO 26124 --- [placepro] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-04-01T01:03:05.731+05:30  INFO 26124 --- [placepro] [           main] com.placepro.PlaceproApplication         : Started PlaceproApplication in 8.989 seconds (process running for 9.654)
+2026-04-01T01:03:10.355+05:30  INFO 26124 --- [placepro] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-01T01:03:10.387+05:30  INFO 26124 --- [placepro] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-04-01T01:03:10.393+05:30  INFO 26124 --- [placepro] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms
+Hibernate: 
+    select
+        a1_0.admin_id,
+        a1_0.name,
+        a1_0.user_id 
+    from
+        admin a1_0 
+    where
+        a1_0.user_id=?
+Hibernate: 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+Hibernate: 
+    insert 
+    into
+        admin
+        (name, user_id) 
+    values
+        (?, ?)
+Hibernate: 
+    select
+        j1_0.job_id,
+        j1_0.application_deadline,
+        j1_0.company_name,
+        j1_0.created_at,
+        j1_0.description,
+        j1_0.job_type,
+        j1_0.location,
+        j1_0.package_amount,
+        j1_0.posted_by_admin_id,
+        j1_0.title 
+    from
+        jobs j1_0 
+    order by
+        j1_0.created_at desc
+Hibernate: 
+    select
+        j1_0.job_id,
+        j1_0.application_deadline,
+        j1_0.company_name,
+        j1_0.created_at,
+        j1_0.description,
+        j1_0.job_type,
+        j1_0.location,
+        j1_0.package_amount,
+        j1_0.posted_by_admin_id,
+        j1_0.title 
+    from
+        jobs j1_0 
+    order by
+        j1_0.created_at desc
+Hibernate: 
+    select
+        a1_0.admin_id,
+        a1_0.name,
+        a1_0.user_id 
+    from
+        admin a1_0
+Hibernate: 
+    select
+        a1_0.admin_id,
+        a1_0.name,
+        a1_0.user_id 
+    from
+        admin a1_0 
+    where
+        a1_0.admin_id=?
+Hibernate: 
+    insert 
+    into
+        jobs
+        (application_deadline, company_name, created_at, description, job_type, location, package_amount, posted_by_admin_id, title) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        j1_0.job_id,
+        j1_0.application_deadline,
+        j1_0.company_name,
+        j1_0.created_at,
+        j1_0.description,
+        j1_0.job_type,
+        j1_0.location,
+        j1_0.package_amount,
+        j1_0.posted_by_admin_id,
+        j1_0.title 
+    from
+        jobs j1_0 
+    order by
+        j1_0.created_at desc
