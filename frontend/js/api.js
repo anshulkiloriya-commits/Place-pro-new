@@ -2,6 +2,65 @@
 // If your backend port changes later, update it here once.
 const PLACEPRO_API_BASE = window.PLACEPRO_API_BASE || 'http://localhost:8080';
 
+function getPlaceProSession() {
+  try {
+    const raw = localStorage.getItem('placeProSession');
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function setPlaceProSession(session) {
+  if (!session) {
+    clearPlaceProSession();
+    return;
+  }
+
+  localStorage.setItem('placeProSession', JSON.stringify(session));
+  localStorage.setItem('loggedInUser', session.name || '');
+}
+
+function clearPlaceProSession() {
+  localStorage.removeItem('placeProSession');
+  localStorage.removeItem('loggedInUser');
+}
+
+function redirectToDashboardByRole(role) {
+  const normalizedRole = String(role || '').trim().toLowerCase();
+
+  if (normalizedRole === 'student') {
+    window.location.href = 'student.html';
+    return true;
+  }
+
+  if (normalizedRole === 'admin') {
+    window.location.href = 'admin.html';
+    return true;
+  }
+
+  if (normalizedRole === 'recruiter') {
+    window.location.href = 'recruiter.html';
+    return true;
+  }
+
+  return false;
+}
+
+function requireRoleSession(expectedRole) {
+  const session = getPlaceProSession();
+  const normalizedExpectedRole = String(expectedRole || '').trim().toLowerCase();
+  const normalizedSessionRole = String(session?.role || '').trim().toLowerCase();
+
+  if (!session || normalizedSessionRole !== normalizedExpectedRole) {
+    clearPlaceProSession();
+    window.location.href = 'login.html';
+    return null;
+  }
+
+  return session;
+}
+
 async function placeProApi(path, options = {}) {
   // Combine the backend base URL with the API path we pass in.
   // Example: "/api/login" becomes "http://localhost:8080/api/login".
@@ -35,3 +94,8 @@ async function placeProApi(path, options = {}) {
 
 window.PLACEPRO_API_BASE = PLACEPRO_API_BASE;
 window.placeProApi = placeProApi;
+window.getPlaceProSession = getPlaceProSession;
+window.setPlaceProSession = setPlaceProSession;
+window.clearPlaceProSession = clearPlaceProSession;
+window.redirectToDashboardByRole = redirectToDashboardByRole;
+window.requireRoleSession = requireRoleSession;

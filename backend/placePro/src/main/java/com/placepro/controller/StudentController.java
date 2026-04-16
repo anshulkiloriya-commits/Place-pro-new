@@ -35,6 +35,11 @@ public class StudentController {
         this.userRepository = userRepository;
     }
 
+    @GetMapping
+    public java.util.List<Student> listStudents() {
+        return repo.findAll();
+    }
+
     // Match the student row with the already-created user row using email.
     private Long resolveUserId(Student student, Student existingStudent) {
         if (student.getUserId() != null) {
@@ -81,7 +86,7 @@ public class StudentController {
     }
 
     
-    // ✅ 1. SAVE STUDENT PROFILE
+    //  1. SAVE STUDENT PROFILE
 
 
     // Handles POST request
@@ -103,7 +108,7 @@ public class StudentController {
     }
 
     // ================================
-    // ✅ 2. GET STUDENT PROFILE BY ID
+    //  2. GET STUDENT PROFILE BY ID
     // ================================
 
     // Handles GET request
@@ -119,7 +124,7 @@ public class StudentController {
     }
 
     // ================================
-    // ✅ 3. UPDATE STUDENT PROFILE
+    //  3. UPDATE STUDENT PROFILE
     // ================================
 
     // Handles PUT request

@@ -6,9 +6,23 @@
   <title>PlacePro | Admin Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="icon" href="../images/pp.jpeg" type="image/jpeg">
   <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body class="bg-white text-black font-sans">
+  <div class="admin-mobile-topbar lg:hidden">
+    <button id="admin-sidebar-toggle" type="button" class="inline-flex items-center justify-center w-11 h-11 border border-neutral-300 bg-white text-black" aria-label="Open navigation menu" aria-expanded="false">
+      <i data-lucide="menu" size="20"></i>
+    </button>
+    <div>
+      <p class="text-[10px] font-black tracking-[0.24em] uppercase text-neutral-400">Admin Portal</p>
+      <p class="text-sm font-black uppercase tracking-tight">PlacePro</p>
+    </div>
+    <div class="w-10 h-10 rounded-full border border-black flex items-center justify-center bg-neutral-50">
+      <i data-lucide="shield-check" size="18"></i>
+    </div>
+  </div>
+  <div id="admin-sidebar-overlay" class="admin-sidebar-overlay"></div>
   <div class="admin-shell flex min-h-screen">
     <nav class="admin-sidebar w-60 bg-black text-white flex flex-col py-10 fixed h-full z-50">
       <div class="flex items-center gap-3 px-6 mb-12">
@@ -21,8 +35,6 @@
         <li class="mb-1"><button onclick="switchAdminPage('home')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 admin-active-nav" data-page="home"><i data-lucide="layout-dashboard" size="18"></i><span class="uppercase tracking-wider">Overview</span></button></li>
         <li class="mb-1"><button onclick="switchAdminPage('updates')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="updates"><i data-lucide="bell" size="18"></i><span class="uppercase tracking-wider">Send Updates</span></button></li>
         <li class="mb-1"><button onclick="switchAdminPage('applications')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="applications"><i data-lucide="clipboard-check" size="18"></i><span class="uppercase tracking-wider">Applied Records</span></button></li>
-        <li class="mb-1"><button onclick="switchAdminPage('credentials')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="credentials"><i data-lucide="award" size="18"></i><span class="uppercase tracking-wider">Credentials</span></button></li>
-        <li class="mb-1"><button onclick="switchAdminPage('documents')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="documents"><i data-lucide="file-text" size="18"></i><span class="uppercase tracking-wider">Documents</span></button></li>
         <li class="mb-1"><button onclick="switchAdminPage('students')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="students"><i data-lucide="user" size="18"></i><span class="uppercase tracking-wider">Student Data</span></button></li>
         <li class="mb-1"><button onclick="switchAdminPage('opportunities')" class="admin-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="opportunities"><i data-lucide="briefcase" size="18"></i><span class="uppercase tracking-wider">P Opportunities</span></button></li>
       </ul>
@@ -34,7 +46,7 @@
       </div>
     </nav>
     <main class="admin-main ml-60 flex-grow p-10 lg:p-14">
-      <header class="flex justify-between items-end mb-16 pb-6 border-b border-neutral-200 gap-6">
+      <header class="flex flex-col sm:flex-row sm:justify-between sm:items-end items-start mb-10 md:mb-16 pb-6 border-b border-neutral-200 gap-6">
         <div>
           <p class="text-[10px] font-black tracking-[0.2em] text-neutral-400 uppercase mb-1">Admin Portal</p>
           <h1 id="admin-page-title" class="text-3xl font-black uppercase tracking-tighter">Dashboard</h1>
@@ -53,6 +65,8 @@
     </main>
   </div>
   <div id="admin-modal-container" class="hidden"></div>
+  <script src="../js/api.js"></script>
+  <script src="../js/dashboard-api.js"></script>
   <script src="../js/admin.js"></script>
 </body>
 </html>

@@ -1,3 +1,56 @@
+.recruiter-mobile-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid #e5e5e5;
+  backdrop-filter: blur(12px);
+}
+
+.recruiter-sidebar {
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+}
+
+.recruiter-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 45;
+}
+
+.recruiter-responsive-table {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.recruiter-responsive-table table {
+  min-width: 640px;
+}
+
+body.recruiter-nav-open {
+  overflow: hidden;
+}
+
+body.recruiter-nav-open .recruiter-sidebar {
+  transform: translateX(0);
+}
+
+body.recruiter-nav-open .recruiter-sidebar-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .recruiter-animate-in {
   animation: recruiterFadeIn 0.35s ease-out;
 }
@@ -63,22 +116,54 @@ select:focus {
 
 @media (max-width: 1024px) {
   .recruiter-sidebar {
-    position: static;
-    width: 100%;
-    height: auto;
-  }
-
-  .recruiter-shell {
-    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(18rem, 86vw);
+    height: 100dvh;
+    transform: translateX(-100%);
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
   }
 
   .recruiter-main {
     margin-left: 0;
+    width: 100%;
+    padding: 1.25rem;
   }
 }
 
 @media (max-width: 640px) {
   .recruiter-main {
-    padding: 1.5rem;
+    padding: 1rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .recruiter-mobile-topbar {
+    display: none;
+  }
+
+  .recruiter-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 15rem;
+    height: 100vh;
+    transform: none !important;
+  }
+
+  .recruiter-sidebar-overlay {
+    display: none;
+  }
+
+  .recruiter-main {
+    margin-left: 15rem;
+    padding: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .recruiter-main {
+    padding: 3.5rem;
   }
 }

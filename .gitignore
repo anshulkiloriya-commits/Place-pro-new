@@ -13,6 +13,10 @@
 backend/placePro/target/
 backend/placePro/codex-*.log
 backend/placePro/codex-debug.*
+backend/placePro/*.out.log
+backend/placePro/*.err.log
+frontend/*.out.log
+frontend/*.err.log
 
 # Backend local config / secrets
 backend/placePro/src/main/resources/application.properties

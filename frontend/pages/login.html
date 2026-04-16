@@ -11,15 +11,15 @@
 <script>
 // Route each user type to its dashboard after login succeeds.
 function redirectByRole(role) {
-    const normalizedRole = String(role || "").toLowerCase();
-    if (normalizedRole === "student") {
-        window.location.href = "student.html";
-    } 
-    else if (normalizedRole === "admin") {
-        window.location.href = "admin.html";
-    } 
-    else if (normalizedRole === "recruiter") {
-        window.location.href = "recruiter.html";
+    const redirected = window.redirectToDashboardByRole
+        ? window.redirectToDashboardByRole(role)
+        : false;
+
+    if (!redirected) {
+        alert("Unable to identify your dashboard. Please log in again.");
+        if (window.clearPlaceProSession) {
+            window.clearPlaceProSession();
+        }
     }
 }
 // Build one consistent session object for the whole frontend.
@@ -48,8 +48,12 @@ function handleCredentialResponse(response) {
         role: role,
         photo: data.picture || ""
     });
-    localStorage.setItem("loggedInUser", session.name);
-    localStorage.setItem("placeProSession", JSON.stringify(session));
+    if (window.setPlaceProSession) {
+        window.setPlaceProSession(session);
+    } else {
+        localStorage.setItem("loggedInUser", session.name);
+        localStorage.setItem("placeProSession", JSON.stringify(session));
+    }
     redirectByRole(role);
 }
 // ✅ JWT PARSER
@@ -84,6 +88,9 @@ async function normalLogin() {
         return;
     }
     try {
+        if (window.clearPlaceProSession) {
+            window.clearPlaceProSession();
+        }
         // Real login call to the backend instead of the previous local-only redirect.
         const payload = await placeProApi("/api/login", {
             method: "POST",
@@ -92,8 +99,12 @@ async function normalLogin() {
         });
         // Save backend response in localStorage so other pages know who is logged in.
         const session = buildSession(payload);
-        localStorage.setItem("loggedInUser", session.name);
-        localStorage.setItem("placeProSession", JSON.stringify(session));
+        if (window.setPlaceProSession) {
+            window.setPlaceProSession(session);
+        } else {
+            localStorage.setItem("loggedInUser", session.name);
+            localStorage.setItem("placeProSession", JSON.stringify(session));
+        }
         redirectByRole(session.role);
     } catch (error) {
         alert(error.message || "Login failed");
@@ -113,6 +124,12 @@ function goToSignup() {
     }
 }
     document.addEventListener("DOMContentLoaded", function () {
+        const existingSession = window.getPlaceProSession ? window.getPlaceProSession() : null;
+        if (existingSession && existingSession.role) {
+            redirectByRole(existingSession.role);
+            return;
+        }
+
         const slides = document.querySelectorAll(".slide");
         let index = 0; 
         if (slides.length === 0) return; // safety check
@@ -123,6 +140,15 @@ function goToSignup() {
         }    
         // start auto sliding every 2 seconds
         setInterval(showNextSlide, 2000);
+
+        const passwordInput = document.getElementById("password");
+        if (passwordInput) {
+            passwordInput.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    normalLogin();
+                }
+            });
+        }
         });
 </script>
 </head>

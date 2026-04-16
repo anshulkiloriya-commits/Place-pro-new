@@ -5,10 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PlacePro | Recruiter Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="../images/pp.jpeg" type="image/jpeg">
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../css/recruiter.css">
 </head>
 <body class="bg-white text-black font-sans">
+  <div class="recruiter-mobile-topbar lg:hidden">
+    <button id="recruiter-sidebar-toggle" type="button" class="inline-flex items-center justify-center w-11 h-11 border border-neutral-300 bg-white text-black" aria-label="Open navigation menu" aria-expanded="false">
+      <i data-lucide="menu" size="20"></i>
+    </button>
+    <div>
+      <p class="text-[10px] font-black tracking-[0.24em] uppercase text-neutral-400">Recruiter Portal</p>
+      <p class="text-sm font-black uppercase tracking-tight">PlacePro</p>
+    </div>
+    <div class="w-10 h-10 rounded-full border border-black flex items-center justify-center bg-neutral-50">
+      <i data-lucide="briefcase" size="18"></i>
+    </div>
+  </div>
+  <div id="recruiter-sidebar-overlay" class="recruiter-sidebar-overlay"></div>
   <div class="recruiter-shell flex min-h-screen">
     <nav class="recruiter-sidebar w-60 bg-black text-white flex flex-col py-10 fixed h-full z-50">
       <div class="flex items-center gap-3 px-6 mb-12">
@@ -22,8 +36,6 @@
         <li class="mb-1"><button onclick="switchRecruiterPage('home')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 recruiter-active-nav" data-page="home"><i data-lucide="layout-dashboard" size="18"></i><span class="uppercase tracking-wider">Overview</span></button></li>
         <li class="mb-1"><button onclick="switchRecruiterPage('updates')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="updates"><i data-lucide="bell" size="18"></i><span class="uppercase tracking-wider">Send Updates</span></button></li>
         <li class="mb-1"><button onclick="switchRecruiterPage('applications')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="applications"><i data-lucide="clipboard-check" size="18"></i><span class="uppercase tracking-wider">Applied Records</span></button></li>
-        <li class="mb-1"><button onclick="switchRecruiterPage('credentials')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="credentials"><i data-lucide="award" size="18"></i><span class="uppercase tracking-wider">Credentials</span></button></li>
-        <li class="mb-1"><button onclick="switchRecruiterPage('documents')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="documents"><i data-lucide="file-text" size="18"></i><span class="uppercase tracking-wider">Documents</span></button></li>
         <li class="mb-1"><button onclick="switchRecruiterPage('students')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="students"><i data-lucide="user" size="18"></i><span class="uppercase tracking-wider">Student Data</span></button></li>
         <li class="mb-1"><button onclick="switchRecruiterPage('opportunities')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="opportunities"><i data-lucide="briefcase" size="18"></i><span class="uppercase tracking-wider">P Opportunities</span></button></li>
       </ul>
@@ -31,13 +43,13 @@
       <div class="px-6 mt-auto">
         <button id="recruiter-logout-btn" class="flex items-center gap-4 text-neutral-400 hover:text-white transition-colors text-sm font-medium uppercase tracking-widest">
           <i data-lucide="log-out" size="18"></i>
-          Exit System
+          Exit
         </button>
       </div>
     </nav>
 
     <main class="recruiter-main ml-60 flex-grow p-10 lg:p-14">
-      <header class="flex justify-between items-end mb-16 pb-6 border-b border-neutral-200 gap-6">
+      <header class="flex flex-col sm:flex-row sm:justify-between sm:items-end items-start mb-10 md:mb-16 pb-6 border-b border-neutral-200 gap-6">
         <div>
           <p class="text-[10px] font-black tracking-[0.2em] text-neutral-400 uppercase mb-1">Recruiter Portal</p>
           <h1 id="recruiter-page-title" class="text-3xl font-black uppercase tracking-tighter">Dashboard</h1>
@@ -59,6 +71,8 @@
 
   <div id="recruiter-modal-container" class="hidden"></div>
 
+  <script src="../js/api.js"></script>
+  <script src="../js/dashboard-api.js"></script>
   <script src="../js/recruiter.js"></script>
 </body>
 </html>

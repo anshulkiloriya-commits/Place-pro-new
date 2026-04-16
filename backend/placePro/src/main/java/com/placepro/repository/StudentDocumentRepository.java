@@ -1,0 +1,12 @@
+package com.placepro.repository;
+
+import com.placepro.model.StudentDocument;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface StudentDocumentRepository extends JpaRepository<StudentDocument, Long> {
+    List<StudentDocument> findByStudentIdOrderByUploadedAtDesc(Long studentId);
+    Optional<StudentDocument> findByStudentIdAndDocumentType(Long studentId, String documentType);
+}

@@ -33,12 +33,17 @@ const profile = {
 };
 const appliedItems = [];
 const documentsData = {
-  resume: { title: 'Resume', icon: 'file-text', accept: '.pdf,.doc,.docx,image/*', fileName: '', fileUrl: '', fileType: '' },
-  internshipCertificates: { title: 'Internship Certificates', icon: 'briefcase-business', accept: '.pdf,image/*', fileName: '', fileUrl: '', fileType: '' },
-  skillCertificates: { title: 'Skills Certificates', icon: 'badge-check', accept: '.pdf,image/*', fileName: '', fileUrl: '', fileType: '' },
-  otherCertificates: { title: 'Other Certificates', icon: 'folder-open', accept: '.pdf,image/*', fileName: '', fileUrl: '', fileType: '' }
+  // These cards appear in the student "Documents" section.
+  resume: { title: 'Resume', icon: 'file-text', accept: '.pdf,.doc,.docx,image/*', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
+  tenthMarksheet: { title: '10th Marksheet', icon: 'graduation-cap', accept: '.pdf,image/*', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
+  twelfthMarksheet: { title: '12th Marksheet', icon: 'book-open-check', accept: '.pdf,image/*', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
+  prd: { title: 'PRD Form', icon: 'shield-check', accept: '.pdf,image/*', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
+  // These cards stay grouped under the certificates page.
+  internshipCertificates: { title: 'Internship Certificates', icon: 'briefcase-business', accept: '.pdf,image/*', category: 'certificates', showOnDocumentsPage: true, fileName: '', fileUrl: '', fileType: '' },
+  skillCertificates: { title: 'Skills Certificates', icon: 'badge-check', accept: '.pdf,image/*', category: 'certificates', fileName: '', fileUrl: '', fileType: '' },
+  otherCertificates: { title: 'Other Certificates', icon: 'folder-open', accept: '.pdf,image/*', category: 'certificates', fileName: '', fileUrl: '', fileType: '' }
 };
-const jobPostings = [
+let jobPostings = [
   { id: 'j1', type: 'Job', company: 'Google', role: 'Software Engineer', lpa: '32.5', location: 'Bangalore', deadline: '2025-05-10', description: 'Working on cloud infrastructure and scalable services.' },
   { id: 'j2', type: 'Job', company: 'Microsoft', role: 'Full Stack Dev', lpa: '28.0', location: 'Hyderabad', deadline: '2025-05-15', description: 'Azure integration and modern web technologies.' },
   { id: 'i1', type: 'Internship', company: 'Amazon', role: 'SDE Intern', stipend: '80,000/mo', duration: '6 Months', location: 'Remote', deadline: '2025-04-30', description: 'Summer internship focused on supply chain optimization.' },
@@ -53,37 +58,8 @@ function getSession() {
     return null;
   }
 }
-function getSharedUpdates() {
-  try {
-    const raw = localStorage.getItem('placeProUpdates');
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-      }
-    }
-
-    const legacy = JSON.parse(localStorage.getItem('notifications') || '[]');
-    if (Array.isArray(legacy) && legacy.length > 0) {
-      return legacy.map((message, index) => ({
-        id: `legacy-${index}`,
-        title: 'Admin Update',
-        message: String(message),
-        type: 'Update',
-        time: 'Recent',
-        source: 'Admin',
-        link: '',
-        createdAt: new Date().toISOString()
-      }));
-    }
-  } catch (error) {
-    return [];
-  }
-  return [];
-}
 function refreshNotifications() {
-  const sharedUpdates = getSharedUpdates();
-  notifications = sharedUpdates.length > 0 ? sharedUpdates : defaultNotifications;
+  notifications = notifications.length > 0 ? notifications : defaultNotifications;
 }
 function requireStudentSession() {
   // Only students should open the student dashboard.
@@ -126,6 +102,111 @@ function syncDocumentsToStorage() {
 // Preserve application data for the existing admin/recruiter views.
 function syncApplicationsToStorage() {
   localStorage.setItem('placeProApplications', JSON.stringify(appliedItems));
+}
+function closeStudentSidebar() {
+  document.body.classList.remove('nav-open');
+  const toggleButton = document.getElementById('sidebar-toggle');
+  if (toggleButton) {
+    toggleButton.setAttribute('aria-expanded', 'false');
+  }
+}
+function toggleStudentSidebar() {
+  const isOpen = document.body.classList.toggle('nav-open');
+  const toggleButton = document.getElementById('sidebar-toggle');
+  if (toggleButton) {
+    toggleButton.setAttribute('aria-expanded', String(isOpen));
+  }
+}
+function mapOpportunityForStudent(opportunity) {
+  return {
+    id: String(opportunity.id),
+    type: opportunity.type,
+    company: opportunity.company,
+    role: opportunity.role,
+    location: opportunity.location,
+    deadline: opportunity.deadline,
+    description: opportunity.description,
+    lpa: opportunity.type === 'Job' ? opportunity.packageValue : '',
+    stipend: opportunity.type === 'Internship' ? opportunity.packageValue : '',
+    packageValue: opportunity.packageValue
+  };
+}
+function applyDocumentsFromBackend(documentList) {
+  Object.values(documentsData).forEach((document) => {
+    document.fileName = '';
+    document.fileUrl = '';
+    document.fileType = '';
+  });
+
+  (documentList || []).forEach((document) => {
+    const documentType = document.documentType || document.key;
+    if (!documentsData[documentType]) {
+      return;
+    }
+    documentsData[documentType].fileName = document.fileName || '';
+    documentsData[documentType].fileUrl = document.fileUrl || '';
+    documentsData[documentType].fileType = document.mimeType || document.fileType || '';
+  });
+  syncDocumentsToStorage();
+}
+function applyApplicationsFromBackend(records) {
+  appliedItems.splice(0, appliedItems.length, ...records.map((record) => ({
+    id: String(record.id),
+    opportunityId: record.opportunityId,
+    company: record.company,
+    role: record.role,
+    type: 'Opportunity',
+    status: record.status,
+    appliedDate: record.appliedAt ? new Date(record.appliedAt).toLocaleDateString() : '',
+    location: record.location,
+    packageValue: record.packageValue,
+    studentName: record.studentName,
+    rollNo: record.studentId || record.rollNo,
+    dob: record.dob,
+    mobile: record.mobile,
+    collegeEmail: record.collegeEmail,
+    tenthMarks: record.tenthMarks,
+    twelfthMarks: record.twelfthMarks,
+    graduationMarks: record.graduationMarks,
+    postGraduationMarks: record.postGraduationMarks,
+    resumeName: record.resumeName,
+    resumeUrl: record.resumeUrl,
+    resumeType: record.resumeType || '',
+    additionalInfo: record.additionalInfo
+  })));
+  syncApplicationsToStorage();
+}
+async function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('Unable to read selected file'));
+    reader.readAsDataURL(file);
+  });
+}
+async function loadStudentDashboardData() {
+  try {
+    const [updates, opportunities, applications, documents] = await Promise.all([
+      fetchPortalUpdates(),
+      fetchOpportunities(),
+      session?.studentId ? fetchStudentApplications(session.studentId) : Promise.resolve([]),
+      session?.studentId ? fetchStudentDocuments(session.studentId) : Promise.resolve([])
+    ]);
+
+    notifications = updates.length > 0 ? updates : defaultNotifications;
+    safeWriteStorage('placeProUpdates', updates);
+    jobPostings = opportunities.map(mapOpportunityForStudent);
+    safeWriteStorage('placeProOpportunities', opportunities);
+    applyApplicationsFromBackend(applications);
+    applyDocumentsFromBackend(documents);
+  } catch (error) {
+    const storedUpdates = safeReadStorage('placeProUpdates', []);
+    notifications = storedUpdates.length > 0 ? storedUpdates : defaultNotifications;
+    const storedOpportunities = safeReadStorage('placeProOpportunities', []);
+    jobPostings = storedOpportunities.length > 0 ? storedOpportunities.map(mapOpportunityForStudent) : jobPostings;
+    applyApplicationsFromBackend(safeReadStorage('placeProApplications', []));
+    applyDocumentsFromBackend(Object.values(safeReadStorage('placeProStudentDocuments', {})));
+  }
 }
 function applyStudentProfile(student) {
   if (!student) {
@@ -297,6 +378,10 @@ function updateHeader() {
   document.querySelector('.user-name-display').innerText = profile.name;
   document.querySelector('.user-roll-display').innerText = profile.rollNo;
   document.getElementById('profile-avatar').src = getAvatarSrc();
+  const mobileAvatar = document.getElementById('mobile-profile-avatar');
+  if (mobileAvatar) {
+    mobileAvatar.src = getAvatarSrc();
+  }
 }
 function updateNav() {
   document.querySelectorAll('.nav-btn').forEach((btn) => {
@@ -497,11 +582,15 @@ function renderDocumentsSection(pageId) {
   const isDocumentPage = pageId === 'resume';
   const sectionTitle = isDocumentPage ? 'Documents Vault' : 'Certificates Vault';
   const sectionDesc = isDocumentPage
-    ? 'Manage your resume and uploaded proof documents from one place.'
+    ? 'Manage your resume, marksheets, PRD, and uploaded proof documents from one place.'
     : 'Keep internship, skills, and other certificates ready for verification.';
 
   const cards = Object.entries(documentsData)
-    .filter(([key]) => isDocumentPage ? true : key !== 'resume')
+    .filter(([, doc]) => (
+      isDocumentPage
+        ? doc.category === 'documents' || doc.showOnDocumentsPage
+        : doc.category === 'certificates'
+    ))
     .map(([key, doc]) => {
       const hasFile = Boolean(doc.fileUrl);
       return `
@@ -899,6 +988,15 @@ function bindStaticEvents() {
   if (logoutButton) {
     logoutButton.onclick = logoutToLogin;
   }
+  const toggleButton = document.getElementById('sidebar-toggle');
+  if (toggleButton) {
+    toggleButton.onclick = toggleStudentSidebar;
+    toggleButton.setAttribute('aria-expanded', String(document.body.classList.contains('nav-open')));
+  }
+  const overlay = document.getElementById('sidebar-overlay');
+  if (overlay) {
+    overlay.onclick = closeStudentSidebar;
+  }
 }
 function bindApplicationForm() {
   document.querySelectorAll('.application-input').forEach((input) => {
@@ -941,39 +1039,64 @@ function handleStudentImageUpload(event) {
   };
   reader.readAsDataURL(file);
 }
-function handleDocumentUpload(event) {
+async function handleDocumentUpload(event) {
   const file = event.target.files[0];
   const docKey = event.target.dataset.docKey;
   if (!file || !docKey || !documentsData[docKey]) {
     return;
   }
-  const existingUrl = documentsData[docKey].fileUrl;
-  if (existingUrl && existingUrl.startsWith('blob:')) {
-    URL.revokeObjectURL(existingUrl);
+  if (file.size > 1024 * 1024) {
+    alert('Document size must be 1MB or less.');
+    event.target.value = '';
+    return;
+  }
+  if (!profile.rollNo) {
+    alert('Please save your profile with a student ID before uploading documents.');
+    event.target.value = '';
+    return;
   }
 
-  documentsData[docKey].fileName = file.name;
-  documentsData[docKey].fileType = file.type || '';
-  // Create a temporary browser URL so the uploaded file can be previewed.
-  documentsData[docKey].fileUrl = URL.createObjectURL(file);
-  syncDocumentsToStorage();
-  renderContent();
+  try {
+    const fileDataUrl = await readFileAsDataUrl(file);
+    const saved = await saveStudentDocument(profile.rollNo, {
+      documentType: docKey,
+      fileName: file.name,
+      fileDataUrl,
+      mimeType: file.type || 'application/octet-stream',
+      fileSizeBytes: file.size
+    });
+    documentsData[docKey].fileName = saved.fileName;
+    documentsData[docKey].fileType = saved.mimeType || '';
+    documentsData[docKey].fileUrl = saved.fileUrl || '';
+    syncDocumentsToStorage();
+    renderContent();
+  } catch (error) {
+    alert(error.message || 'Unable to upload document right now.');
+  } finally {
+    event.target.value = '';
+  }
 }
-function handleApplicationResumeUpload(event) {
+async function handleApplicationResumeUpload(event) {
   const file = event.target.files[0];
   if (!file || !applicationDraft) {
     return;
   }
-
-  if (applicationDraft.resumeUrl && applicationDraft.resumeUrl.startsWith('blob:')) {
-    URL.revokeObjectURL(applicationDraft.resumeUrl);
+  if (file.size > 1024 * 1024) {
+    alert('Resume size must be 1MB or less.');
+    event.target.value = '';
+    return;
   }
 
-  applicationDraft.resumeName = file.name;
-  applicationDraft.resumeType = file.type || '';
-  applicationDraft.resumeUrl = URL.createObjectURL(file);
-  syncDocumentsToStorage();
-  renderModal();
+  try {
+    applicationDraft.resumeName = file.name;
+    applicationDraft.resumeType = file.type || '';
+    applicationDraft.resumeUrl = await readFileAsDataUrl(file);
+    renderModal();
+  } catch (error) {
+    alert(error.message || 'Unable to read selected resume.');
+  } finally {
+    event.target.value = '';
+  }
 }
 function viewDocument(docKey) {
   const doc = documentsData[docKey];
@@ -1051,6 +1174,7 @@ function switchPage(pageId) {
   activePage = pageId;
   updateNav();
   updateHeader();
+  closeStudentSidebar();
   renderContent();
 }
 async function toggleEditProfile() {
@@ -1084,7 +1208,7 @@ function closeApplyModal() {
   applicationDraft = null;
   renderModal();
 }
-function handleApply() {
+async function handleApply() {
   if (!selectedJob || !applicationDraft) {
     return;
   }
@@ -1094,50 +1218,45 @@ function handleApply() {
     alert('Please complete all required fields and upload your resume before submitting.');
     return;
   }
-  const alreadyApplied = appliedItems.some((item) => item.id === selectedJob.id);
-  if (!alreadyApplied) {
-    appliedItems.unshift({
-      id: selectedJob.id,
+  try {
+    await createApplication({
+      opportunityId: Number(selectedJob.id) || null,
+      studentId: applicationDraft.rollNo,
+      studentName: applicationDraft.studentName,
       company: selectedJob.company,
       role: selectedJob.role,
-      type: selectedJob.type,
-      status: 'Pending Review',
-      appliedDate: new Date().toLocaleDateString(),
       location: selectedJob.location,
       packageValue: applicationDraft.packageValue,
-      studentName: applicationDraft.studentName,
-      rollNo: applicationDraft.rollNo,
       dob: applicationDraft.dob,
       mobile: applicationDraft.mobile,
       collegeEmail: applicationDraft.collegeEmail,
-      tenthMarks: applicationDraft.tenthMarks,
-      twelfthMarks: applicationDraft.twelfthMarks,
-      graduationMarks: applicationDraft.graduationMarks,
-      postGraduationMarks: applicationDraft.postGraduationMarks,
+      tenthMarks: applicationDraft.tenthMarks || null,
+      twelfthMarks: applicationDraft.twelfthMarks || null,
+      graduationMarks: applicationDraft.graduationMarks || null,
+      postGraduationMarks: applicationDraft.postGraduationMarks || null,
+      additionalInfo: applicationDraft.additionalInfo || '',
       resumeName: applicationDraft.resumeName,
       resumeUrl: applicationDraft.resumeUrl,
-      resumeType: applicationDraft.resumeType || '',
-      additionalInfo: applicationDraft.additionalInfo
+      resumeType: applicationDraft.resumeType || ''
     });
+    applyApplicationsFromBackend(await fetchStudentApplications(applicationDraft.rollNo));
+    selectedJob = null;
+    applicationDraft = null;
+    activePage = 'applied';
+    updateNav();
+    updateHeader();
+    renderContent();
+  } catch (error) {
+    alert(error.message || 'Unable to submit application right now.');
   }
-  if (applicationDraft.resumeUrl && applicationDraft.resumeUrl.startsWith('blob:') && applicationDraft.resumeUrl !== documentsData.resume.fileUrl) {
-    documentsData.resume.fileName = applicationDraft.resumeName;
-    documentsData.resume.fileUrl = applicationDraft.resumeUrl;
-    documentsData.resume.fileType = applicationDraft.resumeType || '';
-    syncDocumentsToStorage();
-  }
-  // Store submitted applications locally so admin/recruiter pages can keep showing them.
-  syncApplicationsToStorage();
-  selectedJob = null;
-  applicationDraft = null;
-  activePage = 'applied';
-  updateNav();
-  updateHeader();
-  renderContent();
 }
 function logoutToLogin() {
-  localStorage.removeItem('placeProSession');
-  localStorage.removeItem('loggedInUser');
+  if (window.clearPlaceProSession) {
+    window.clearPlaceProSession();
+  } else {
+    localStorage.removeItem('placeProSession');
+    localStorage.removeItem('loggedInUser');
+  }
   window.location.href = 'login.html';
 }
 window.switchPage = switchPage;
@@ -1152,14 +1271,26 @@ window.viewAppliedRecord = viewAppliedRecord;
 window.closeAppliedRecordView = closeAppliedRecordView;
 window.viewAppliedResume = viewAppliedResume;
 window.onload = async () => {
-  if (!requireStudentSession()) {
+  const activeSession = window.requireRoleSession ? window.requireRoleSession('Student') : null;
+  if (!activeSession) {
     return;
   }
-  // Restore local dashboard data, then fetch the latest backend profile.
-  syncDocumentsToStorage();
-  syncApplicationsToStorage();
   await loadStudentProfile();
+  await loadStudentDashboardData();
   bindStaticEvents();
   updateHeader();
   switchPage('home');
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 1024) {
+      closeStudentSidebar();
+    }
+  });
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeStudentSidebar();
+      closeApplyModal();
+      closeDocumentPreview();
+      closeAppliedRecordView();
+    }
+  });
 };
