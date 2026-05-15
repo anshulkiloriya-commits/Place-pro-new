@@ -24,6 +24,9 @@ import com.placepro.repository.UserRepository;
 // Allows frontend (Live Server - port 5500) to call backend (port 8080)
 @CrossOrigin("*")
 public class StudentController {
+    private static final String ENROLLMENT_PATTERN = "^0801(CA|IT|CS|CV)25(10|11)[0-9]+$";
+    private static final String ENROLLMENT_MESSAGE = "Enrollment number must follow format: 0801CA251001";
+    private static final String MOBILE_MESSAGE = "Mobile number must contain exactly 10 digits without country code";
 
     // Repository object to interact with database
     private final StudentRepository repo;
@@ -68,11 +71,20 @@ public class StudentController {
     }
 
     private void validateStudent(Student student) {
-        if (student.getEnrollmentNo() == null || !student.getEnrollmentNo().matches("^[0-9]{4}[A-Z]{2}[0-9]{6}$")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID must match format 0801CA251022");
+        if (student.getEnrollmentNo() != null) {
+            student.setEnrollmentNo(student.getEnrollmentNo().trim().toUpperCase());
+        }
+        if (student.getEnrollmentNo() == null || !student.getEnrollmentNo().matches(ENROLLMENT_PATTERN)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ENROLLMENT_MESSAGE);
         }
         if (student.getMobile() != null && !student.getMobile().isBlank() && !student.getMobile().matches("^[0-9]{10}$")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Phone number must be exactly 10 digits");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MOBILE_MESSAGE);
+        }
+        if (student.getFatherMobile() != null && !student.getFatherMobile().isBlank() && !student.getFatherMobile().matches("^[0-9]{10}$")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MOBILE_MESSAGE);
+        }
+        if (student.getMotherMobile() != null && !student.getMotherMobile().isBlank() && !student.getMotherMobile().matches("^[0-9]{10}$")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MOBILE_MESSAGE);
         }
         if (student.getAbcId() != null && !student.getAbcId().isBlank() && !student.getAbcId().matches("^[0-9]{12}$")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ABC ID must be exactly 12 digits");
@@ -132,11 +144,12 @@ public class StudentController {
     @PutMapping("/{sId}")
     public Student updateStudent(@PathVariable String sId, @RequestBody Student student) {
 
-        Student existingStudent = repo.findByEnrollmentNo(sId).orElse(null);
+        String normalizedEnrollmentNo = sId == null ? "" : sId.trim().toUpperCase();
+        Student existingStudent = repo.findByEnrollmentNo(normalizedEnrollmentNo).orElse(null);
 
         // Set ID manually (important for update)
         // Without this, new record will be created instead of updating
-        student.setEnrollmentNo(sId);
+        student.setEnrollmentNo(normalizedEnrollmentNo);
         // Preserve or resolve user_id so updates do not violate the database constraint.
         student.setUserId(resolveUserId(student, existingStudent));
         if (existingStudent != null && existingStudent.getId() != null) {

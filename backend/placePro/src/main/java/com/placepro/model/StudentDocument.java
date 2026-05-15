@@ -20,7 +20,8 @@ public class StudentDocument {
     @Column(name = "file_name", nullable = false)
     private String fileName;
 
-    @Column(name = "file_path", nullable = false, length = 4000)
+    // Use TEXT so base64 PDF uploads do not overflow a varchar column.
+    @Column(name = "file_path", nullable = false, columnDefinition = "TEXT")
     private String filePath;
 
     @Column(name = "mime_type")

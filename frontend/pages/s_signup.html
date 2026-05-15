@@ -10,14 +10,22 @@
 async function signupStudent() {
 
   // Read all input values from the signup form.
-  const enroll = document.getElementById("enroll").value;
+  const enroll = document.getElementById("enroll").value.trim().toUpperCase();
   const name = document.getElementById("name").value;
-  const phone = document.getElementById("phone").value;
+  const phone = document.getElementById("phone").value.trim();
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   if(enroll=="" || name=="" || phone=="" || email=="" || password==""){
     alert("Please fill all fields");
+    return;
+  }
+  if(!/^0801(CA|IT|CS|CV)25(10|11)[0-9]+$/.test(enroll)){
+    alert("Enrollment number must follow format: 0801CA251001");
+    return;
+  }
+  if(!/^[0-9]{10}$/.test(phone)){
+    alert("Mobile number must contain exactly 10 digits without country code");
     return;
   }
 
@@ -89,6 +97,10 @@ async function signupStudent() {
 <!-- SLIDER SCRIPT -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    const enrollInput = document.getElementById("enroll");
+    const phoneInput = document.getElementById("phone");
+    if (enrollInput) enrollInput.addEventListener("input", () => enrollInput.value = enrollInput.value.toUpperCase().replace(/[^0-9A-Z]/g, ""));
+    if (phoneInput) phoneInput.addEventListener("input", () => phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 10));
     const slides = document.querySelectorAll(".slide");
     let index = 0;
     function showNextSlide() {

@@ -1,0 +1,357 @@
+:root {
+  --pp-primary: #1e3a5f;
+  --pp-secondary: #2c4e73;
+  --pp-accent: #3b82f6;
+  --pp-light: #eff6ff;
+  --pp-white: #ffffff;
+  --pp-text: #1f2937;
+  --pp-muted: #4b5563;
+  --pp-border: #d6e4f0;
+  --pp-shadow: 0 18px 45px rgba(30, 58, 95, 0.1);
+  --pp-shadow-hover: 0 24px 60px rgba(30, 58, 95, 0.16);
+  --pp-radius: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--pp-light);
+  color: var(--pp-text);
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.1), transparent 30rem),
+    linear-gradient(180deg, #f8fbff 0%, var(--pp-light) 100%) !important;
+  color: var(--pp-text) !important;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+.bg-black {
+  background-color: var(--pp-primary) !important;
+}
+
+.text-black {
+  color: var(--pp-text) !important;
+}
+
+.border-black {
+  border-color: var(--pp-primary) !important;
+}
+
+.hover\:bg-black:hover {
+  background-color: var(--pp-primary) !important;
+}
+
+.hover\:border-black:hover {
+  border-color: var(--pp-accent) !important;
+}
+
+.hover\:text-black:hover {
+  color: var(--pp-primary) !important;
+}
+
+.bg-neutral-50,
+.bg-neutral-100 {
+  background-color: var(--pp-light) !important;
+}
+
+.border-neutral-100,
+.border-neutral-200,
+.border-neutral-300 {
+  border-color: var(--pp-border) !important;
+}
+
+.text-neutral-300,
+.text-neutral-400,
+.text-neutral-500,
+.text-neutral-600 {
+  color: var(--pp-muted) !important;
+}
+
+.admin-sidebar,
+.sidebar,
+.recruiter-sidebar {
+  background: linear-gradient(180deg, var(--pp-primary), #142a47) !important;
+  box-shadow: 16px 0 42px rgba(30, 58, 95, 0.18);
+}
+
+.admin-mobile-topbar,
+.mobile-topbar,
+.recruiter-mobile-topbar {
+  background: rgba(30, 58, 95, 0.96) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16) !important;
+  color: var(--pp-white) !important;
+}
+
+.admin-mobile-topbar p,
+.mobile-topbar p,
+.recruiter-mobile-topbar p {
+  color: var(--pp-white) !important;
+}
+
+.admin-mobile-topbar button,
+.mobile-topbar button,
+.recruiter-mobile-topbar button {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: var(--pp-white) !important;
+  border-radius: 12px;
+}
+
+.admin-active-nav,
+.active-nav,
+.recruiter-active-nav {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border-color: var(--pp-accent) !important;
+  color: var(--pp-white) !important;
+  box-shadow: inset 4px 0 0 var(--pp-accent);
+}
+
+.admin-nav-btn,
+.nav-btn,
+.recruiter-nav-btn {
+  border-radius: 0 14px 14px 0;
+}
+
+.admin-nav-btn:hover:not(.admin-active-nav),
+.nav-btn:hover:not(.active-nav),
+.recruiter-nav-btn:hover:not(.recruiter-active-nav) {
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: translateX(3px);
+}
+
+.admin-main,
+.main-content,
+.recruiter-main {
+  min-height: 100vh;
+}
+
+.admin-main > header,
+.main-content > header,
+.recruiter-main > header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  margin: -1rem -1rem 2rem;
+  padding: 1.25rem 1rem;
+  background: rgba(248, 251, 255, 0.88);
+  border-bottom: 1px solid var(--pp-border) !important;
+  backdrop-filter: blur(16px);
+}
+
+@media (min-width: 1025px) {
+  .admin-main > header,
+  .main-content > header,
+  .recruiter-main > header {
+    margin: -1.5rem -1.5rem 2.5rem;
+    padding: 1.5rem;
+  }
+}
+
+.admin-stat-card,
+.stat-card,
+.recruiter-stat-card,
+.admin-action-card,
+.quick-link,
+.recruiter-action-card,
+.admin-doc-card,
+.doc-card,
+.recruiter-doc-card,
+.admin-responsive-table,
+.responsive-table,
+.recruiter-responsive-table,
+.admin-main [class*="border"],
+.main-content [class*="border"],
+.recruiter-main [class*="border"] {
+  border-color: var(--pp-border) !important;
+}
+
+.admin-stat-card,
+.stat-card,
+.recruiter-stat-card,
+.admin-action-card,
+.quick-link,
+.recruiter-action-card,
+.admin-doc-card,
+.doc-card,
+.recruiter-doc-card,
+.admin-responsive-table,
+.responsive-table,
+.recruiter-responsive-table {
+  background: var(--pp-white);
+  border-radius: var(--pp-radius);
+  box-shadow: var(--pp-shadow);
+}
+
+.admin-stat-card:hover,
+.stat-card:hover,
+.recruiter-stat-card:hover,
+.admin-action-card:hover,
+.quick-link:hover,
+.recruiter-action-card:hover,
+.admin-doc-card:hover,
+.doc-card:hover,
+.recruiter-doc-card:hover {
+  box-shadow: var(--pp-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.admin-action-icon,
+.quick-link-icon,
+.recruiter-action-icon,
+.admin-doc-icon,
+.doc-card-icon,
+.recruiter-doc-icon {
+  border-radius: 14px;
+  color: var(--pp-primary);
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+button {
+  border-radius: 12px;
+}
+
+label[class*="cursor-pointer"] {
+  border-radius: 12px;
+}
+
+button.bg-black,
+.hover\:bg-black:hover {
+  box-shadow: 0 10px 22px rgba(30, 58, 95, 0.18);
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+input,
+select,
+textarea {
+  background: var(--pp-white) !important;
+  border: 1px solid var(--pp-border) !important;
+  border-radius: 12px !important;
+  color: var(--pp-text) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--pp-accent) !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.14);
+  outline: none !important;
+}
+
+input:disabled {
+  background: rgba(239, 246, 255, 0.55) !important;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+thead tr {
+  background: var(--pp-primary) !important;
+}
+
+thead th {
+  color: var(--pp-white) !important;
+  border: 0 !important;
+}
+
+tbody tr:nth-child(even) {
+  background: rgba(239, 246, 255, 0.55);
+}
+
+tbody tr:hover {
+  background: #e7f1ff !important;
+}
+
+.admin-responsive-table,
+.responsive-table,
+.recruiter-responsive-table {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.admin-modal-backdrop,
+.modal-backdrop,
+.recruiter-modal-backdrop {
+  background: rgba(15, 31, 52, 0.62) !important;
+  backdrop-filter: blur(10px);
+}
+
+.admin-modal-backdrop > div,
+.modal-backdrop > div,
+.recruiter-modal-backdrop > div {
+  border: 1px solid var(--pp-border);
+  border-radius: 18px;
+  box-shadow: 0 30px 90px rgba(15, 31, 52, 0.28);
+}
+
+.student-image-frame {
+  border-color: var(--pp-border) !important;
+  border-radius: 16px;
+  box-shadow: var(--pp-shadow);
+}
+
+.candidate-pipeline-grid {
+  align-items: stretch;
+}
+
+.candidate-pipeline-card {
+  display: flex;
+  min-height: 190px;
+  flex-direction: column;
+}
+
+.candidate-pipeline-card-title {
+  min-height: 38px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.candidate-pipeline-card-meta {
+  min-height: 28px;
+  line-height: 1.35;
+}
+
+.candidate-pipeline-card-actions {
+  margin-top: auto;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--pp-secondary) !important;
+  border-radius: 999px;
+}
+
+@media (max-width: 760px) {
+  .admin-main,
+  .main-content,
+  .recruiter-main {
+    padding: 1rem !important;
+  }
+
+  .admin-responsive-table,
+  .responsive-table,
+  .recruiter-responsive-table {
+    border-radius: 14px;
+  }
+
+  th,
+  td {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}

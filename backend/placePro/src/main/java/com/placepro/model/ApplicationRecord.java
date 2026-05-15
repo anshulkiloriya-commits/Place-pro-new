@@ -34,8 +34,41 @@ public class ApplicationRecord {
     @Column(name = "package_value")
     private String packageValue;
 
+    @Column(name = "branch")
+    private String branch;
+
+    @Column(name = "cgpa")
+    private BigDecimal cgpa;
+
     @Column(nullable = false)
     private String status;
+
+    @Column(name = "pipeline_stage")
+    private String pipelineStage;
+
+    @Column(name = "hiring_status")
+    private String hiringStatus;
+
+    @Column(name = "interview_round")
+    private String interviewRound;
+
+    @Column(name = "interview_status")
+    private String interviewStatus;
+
+    @Column(name = "interview_at")
+    private LocalDateTime interviewAt;
+
+    @Column(name = "interview_location")
+    private String interviewLocation;
+
+    @Column(name = "interview_link")
+    private String interviewLink;
+
+    @Column(name = "recruiter_remarks", length = 4000)
+    private String recruiterRemarks;
+
+    @Column(name = "last_recruiter_action_at")
+    private LocalDateTime lastRecruiterActionAt;
 
     @Column(name = "applied_at", nullable = false)
     private LocalDateTime appliedAt;
@@ -64,7 +97,8 @@ public class ApplicationRecord {
     @Column(name = "resume_name")
     private String resumeName;
 
-    @Column(name = "resume_url", length = 4000)
+    // Store submitted resumes as TEXT because base64 PDF payloads are longer than 4000 characters.
+    @Column(name = "resume_url", columnDefinition = "TEXT")
     private String resumeUrl;
 
     @Column(name = "resume_type")
@@ -134,12 +168,100 @@ public class ApplicationRecord {
         this.packageValue = packageValue;
     }
 
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
+    public BigDecimal getCgpa() {
+        return cgpa;
+    }
+
+    public void setCgpa(BigDecimal cgpa) {
+        this.cgpa = cgpa;
+    }
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPipelineStage() {
+        return pipelineStage;
+    }
+
+    public void setPipelineStage(String pipelineStage) {
+        this.pipelineStage = pipelineStage;
+    }
+
+    public String getHiringStatus() {
+        return hiringStatus;
+    }
+
+    public void setHiringStatus(String hiringStatus) {
+        this.hiringStatus = hiringStatus;
+    }
+
+    public String getInterviewRound() {
+        return interviewRound;
+    }
+
+    public void setInterviewRound(String interviewRound) {
+        this.interviewRound = interviewRound;
+    }
+
+    public String getInterviewStatus() {
+        return interviewStatus;
+    }
+
+    public void setInterviewStatus(String interviewStatus) {
+        this.interviewStatus = interviewStatus;
+    }
+
+    public LocalDateTime getInterviewAt() {
+        return interviewAt;
+    }
+
+    public void setInterviewAt(LocalDateTime interviewAt) {
+        this.interviewAt = interviewAt;
+    }
+
+    public String getInterviewLocation() {
+        return interviewLocation;
+    }
+
+    public void setInterviewLocation(String interviewLocation) {
+        this.interviewLocation = interviewLocation;
+    }
+
+    public String getInterviewLink() {
+        return interviewLink;
+    }
+
+    public void setInterviewLink(String interviewLink) {
+        this.interviewLink = interviewLink;
+    }
+
+    public String getRecruiterRemarks() {
+        return recruiterRemarks;
+    }
+
+    public void setRecruiterRemarks(String recruiterRemarks) {
+        this.recruiterRemarks = recruiterRemarks;
+    }
+
+    public LocalDateTime getLastRecruiterActionAt() {
+        return lastRecruiterActionAt;
+    }
+
+    public void setLastRecruiterActionAt(LocalDateTime lastRecruiterActionAt) {
+        this.lastRecruiterActionAt = lastRecruiterActionAt;
     }
 
     public LocalDateTime getAppliedAt() {

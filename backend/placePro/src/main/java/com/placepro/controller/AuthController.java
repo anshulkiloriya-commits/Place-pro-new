@@ -26,6 +26,7 @@ import java.util.Optional;
 @RequestMapping("/api")                 // Base URL for all APIs in this controller
 @CrossOrigin(origins = "*")             // Allows frontend applications to access these APIs
 public class AuthController {
+    private static final String MOBILE_MESSAGE = "Mobile number must contain exactly 10 digits without country code";
 
     private String normalizeRoleForDatabase(String role) {
         return role == null ? null : role.trim().toUpperCase();
@@ -148,6 +149,12 @@ public class AuthController {
 
         // Convert UI roles like "Student" into the uppercase values required by PostgreSQL.
         user.setRole(normalizeRoleForDatabase(user.getRole()));
+        if (user.getEmail() != null) {
+            user.setEmail(user.getEmail().trim().toLowerCase());
+        }
+        if (user.getName() != null) {
+            user.setName(user.getName().trim());
+        }
 
         // Check if email already exists in database
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {

@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS students (
     student_image TEXT,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
-    CONSTRAINT students_enrollment_check CHECK (enrollment_no ~ '^[0-9]{4}[A-Z]{2}[0-9]{6}$'),
+    CONSTRAINT students_enrollment_check CHECK (enrollment_no ~ '^0801(CA|IT|CS|CV)25(10|11)[0-9]+$'),
     CONSTRAINT students_mobile_check CHECK (mobile IS NULL OR mobile ~ '^[0-9]{10}$'),
     CONSTRAINT students_father_mobile_check CHECK (father_mobile IS NULL OR father_mobile ~ '^[0-9]{10}$'),
     CONSTRAINT students_mother_mobile_check CHECK (mother_mobile IS NULL OR mother_mobile ~ '^[0-9]{10}$'),
@@ -46,7 +46,8 @@ CREATE TABLE IF NOT EXISTS student_documents (
     mime_type VARCHAR(100),
     file_size_bytes BIGINT NOT NULL,
     uploaded_at TIMESTAMP DEFAULT NOW(),
-    CONSTRAINT student_documents_size_check CHECK (file_size_bytes <= 1048576)
+    CONSTRAINT student_documents_size_check CHECK (file_size_bytes < 1048576),
+    CONSTRAINT student_documents_mime_check CHECK (mime_type IS NULL OR mime_type IN ('application/pdf', 'image/jpeg', 'image/png'))
 );
 
 CREATE INDEX IF NOT EXISTS idx_student_documents_student_id ON student_documents(student_id);

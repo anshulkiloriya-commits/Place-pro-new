@@ -7,7 +7,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="../images/pp.jpeg" type="image/jpeg">
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="../css/recruiter.css">
+  <link rel="stylesheet" href="../css/recruiter.css?v=3">
+  <link rel="stylesheet" href="../css/portal-theme.css?v=3">
 </head>
 <body class="bg-white text-black font-sans">
   <div class="recruiter-mobile-topbar lg:hidden">
@@ -36,6 +37,10 @@
         <li class="mb-1"><button onclick="switchRecruiterPage('home')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 recruiter-active-nav" data-page="home"><i data-lucide="layout-dashboard" size="18"></i><span class="uppercase tracking-wider">Overview</span></button></li>
         <li class="mb-1"><button onclick="switchRecruiterPage('updates')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="updates"><i data-lucide="bell" size="18"></i><span class="uppercase tracking-wider">Send Updates</span></button></li>
         <li class="mb-1"><button onclick="switchRecruiterPage('applications')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="applications"><i data-lucide="clipboard-check" size="18"></i><span class="uppercase tracking-wider">Applied Records</span></button></li>
+        <li class="mb-1"><button onclick="switchRecruiterPage('pipeline')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="pipeline"><i data-lucide="kanban-square" size="18"></i><span class="uppercase tracking-wider">CANDIDATE PIPELINE</span></button></li>
+        <li class="mb-1"><button onclick="switchRecruiterPage('interviews')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="interviews"><i data-lucide="calendar-clock" size="18"></i><span class="uppercase tracking-wider">Interviews</span></button></li>
+        <li class="mb-1"><button onclick="switchRecruiterPage('hiring')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="hiring"><i data-lucide="badge-check" size="18"></i><span class="uppercase tracking-wider">Hiring Status</span></button></li>
+        <li class="mb-1"><button onclick="switchRecruiterPage('communication')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="communication"><i data-lucide="messages-square" size="18"></i><span class="uppercase tracking-wider">Communication</span></button></li>
         <li class="mb-1"><button onclick="switchRecruiterPage('students')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="students"><i data-lucide="user" size="18"></i><span class="uppercase tracking-wider">Student Data</span></button></li>
         <li class="mb-1"><button onclick="switchRecruiterPage('opportunities')" class="recruiter-nav-btn w-full flex items-center gap-4 px-6 py-3 text-sm font-medium transition-all border-l-4 border-transparent text-neutral-400 hover:text-white" data-page="opportunities"><i data-lucide="briefcase" size="18"></i><span class="uppercase tracking-wider">P Opportunities</span></button></li>
       </ul>
@@ -72,7 +77,7 @@
   <div id="recruiter-modal-container" class="hidden"></div>
 
   <script src="../js/api.js"></script>
-  <script src="../js/dashboard-api.js"></script>
-  <script src="../js/recruiter.js"></script>
+  <script src="../js/dashboard-api.js?v=3"></script>
+  <script src="../js/recruiter.js?v=3"></script>
 </body>
 </html>

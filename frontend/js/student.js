@@ -2,6 +2,7 @@ let activePage = 'home';
 let isEditing = false;
 let selectedJob = null
 let selectedDocumentKey = null;
+let activeDocumentPreviewUrl = null;
 let applicationDraft = null;
 let selectedApplicationRecord = null;
 const DEMO_STUDENT_IMAGE = 'https://api.dicebear.com/7.x/notionists/svg?seed=PlacePro%20Student';
@@ -38,6 +39,12 @@ const documentsData = {
   tenthMarksheet: { title: '10th Marksheet', icon: 'graduation-cap', accept: '.pdf,image/*', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
   twelfthMarksheet: { title: '12th Marksheet', icon: 'book-open-check', accept: '.pdf,image/*', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
   prd: { title: 'PRD Form', icon: 'shield-check', accept: '.pdf,image/*', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
+  abcId: { title: 'ABC ID', icon: 'id-card', accept: '.pdf,image/*', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
+  aadhaarCard: { title: 'Aadhaar Card', icon: 'credit-card', accept: '.pdf,.jpg,.jpeg,.png', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
+  panCard: { title: 'PAN Card', icon: 'credit-card', accept: '.pdf,.jpg,.jpeg,.png', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
+  domicileCertificate: { title: 'Domicile Certificate', icon: 'map-pinned', accept: '.pdf,image/*', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
+  casteCertificate: { title: 'Caste Certificate', icon: 'file-badge', accept: '.pdf,image/*', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
+  cvOnePage: { title: 'CV 01 Page', icon: 'file-user', accept: '.pdf,.doc,.docx,image/*', category: 'documents', fileName: '', fileUrl: '', fileType: '' },
   // These cards stay grouped under the certificates page.
   internshipCertificates: { title: 'Internship Certificates', icon: 'briefcase-business', accept: '.pdf,image/*', category: 'certificates', showOnDocumentsPage: true, fileName: '', fileUrl: '', fileType: '' },
   skillCertificates: { title: 'Skills Certificates', icon: 'badge-check', accept: '.pdf,image/*', category: 'certificates', fileName: '', fileUrl: '', fileType: '' },
@@ -184,6 +191,34 @@ async function readFileAsDataUrl(file) {
     reader.readAsDataURL(file);
   });
 }
+function normalizeEnrollmentInput(value) {
+  return String(value || '').trim().toUpperCase();
+}
+function isValidEnrollment(value) {
+  return /^0801(CA|IT|CS|CV)25(10|11)[0-9]+$/.test(normalizeEnrollmentInput(value));
+}
+function isValidMobile(value) {
+  return /^[0-9]{10}$/.test(String(value || '').trim());
+}
+function validateUploadFile(file, options = {}) {
+  if (!file) {
+    return 'Please select a file.';
+  }
+  if (file.size >= 1024 * 1024) {
+    return 'File size must be less than 1 MB';
+  }
+  const name = String(file.name || '').toLowerCase();
+  const type = String(file.type || '').toLowerCase();
+  const isPdfOrImage = type === 'application/pdf' || type === 'image/jpeg' || type === 'image/png'
+    || name.endsWith('.pdf') || name.endsWith('.jpg') || name.endsWith('.jpeg') || name.endsWith('.png');
+  const isOffice = type === 'application/msword'
+    || type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    || name.endsWith('.doc') || name.endsWith('.docx');
+  if (options.allowOffice ? !(isPdfOrImage || isOffice) : !isPdfOrImage) {
+    return options.allowOffice ? 'Only PDF/DOC/DOCX/JPG/PNG files are allowed' : 'Only PDF/JPG/PNG files are allowed';
+  }
+  return '';
+}
 async function loadStudentDashboardData() {
   try {
     const [updates, opportunities, applications, documents] = await Promise.all([
@@ -282,20 +317,21 @@ async function saveStudentProfile() {
     alert('Student roll number is required to save profile.');
     return false;
   }
-  if (!/^[0-9]{4}[A-Z]{2}[0-9]{6}$/.test(profile.rollNo)) {
-    alert('Student ID must match format 0801CA251022.');
+  profile.rollNo = normalizeEnrollmentInput(profile.rollNo);
+  if (!isValidEnrollment(profile.rollNo)) {
+    alert('Enrollment number must follow format: 0801CA251001');
     return false;
   }
-  if (profile.mobile && !/^[0-9]{10}$/.test(profile.mobile)) {
-    alert('Phone number must be exactly 10 digits.');
+  if (profile.mobile && !isValidMobile(profile.mobile)) {
+    alert('Mobile number must contain exactly 10 digits without country code');
     return false;
   }
-  if (profile.fatherMobile && !/^[0-9]{10}$/.test(profile.fatherMobile)) {
-    alert("Father's mobile number must be exactly 10 digits.");
+  if (profile.fatherMobile && !isValidMobile(profile.fatherMobile)) {
+    alert('Mobile number must contain exactly 10 digits without country code');
     return false;
   }
-  if (profile.motherMobile && !/^[0-9]{10}$/.test(profile.motherMobile)) {
-    alert("Mother's mobile number must be exactly 10 digits.");
+  if (profile.motherMobile && !isValidMobile(profile.motherMobile)) {
+    alert('Mobile number must contain exactly 10 digits without country code');
     return false;
   }
   if (profile.abcId && !/^[0-9]{12}$/.test(profile.abcId)) {
@@ -553,7 +589,7 @@ function renderJobs() {
 function renderApplied() {
   return `
     <div class="animate-in">
-      <div class="border border-neutral-200 overflow-hidden">
+      <div class="responsive-table border border-neutral-200 overflow-hidden">
         <table class="w-full text-left">
           <thead>
             <tr class="bg-neutral-50 border-b border-neutral-200">
@@ -700,9 +736,9 @@ function renderProfile() {
     { label: 'PAN Card Number', key: 'pan' }
   ];
   const uploadCards = [
-    { label: 'Aadhaar Scan (Front/Back)', icon: 'credit-card' },
-    { label: 'PAN Card Scan', icon: 'credit-card' },
-    { label: 'Student Signature', icon: 'pen-tool' }
+    { label: 'Aadhaar Card', icon: 'credit-card', key: 'aadhaarCard' },
+    { label: 'ABC ID', icon: 'id-card', key: 'abcId' },
+    { label: 'PAN Card', icon: 'credit-card', key: 'panCard' }
   ];
   return `
     <div class="animate-in">
@@ -754,16 +790,19 @@ function renderProfile() {
             ${idFields.map((field) => renderInputField(field)).join('')}
           </div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            ${uploadCards.map((doc) => `
+            ${uploadCards.map((doc) => {
+              const saved = documentsData[doc.key];
+              return `
               <div class="doc-card p-6 border border-dashed border-neutral-200 hover:border-black transition-all flex flex-col items-center justify-center text-center group">
                 <i data-lucide="${doc.icon}" size="20" class="doc-card-icon mb-4 text-neutral-300 group-hover:text-black transition-transform"></i>
                 <p class="text-[10px] font-black uppercase mb-4 tracking-tighter">${doc.label}</p>
                 <label class="px-4 py-2 bg-neutral-100 text-[9px] font-black uppercase tracking-widest cursor-pointer hover:bg-black hover:text-white transition-all">
-                  Upload Image
-                  <input type="file" class="hidden" />
+                  Upload File
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png" data-doc-key="${doc.key}" class="document-input hidden" />
                 </label>
+                ${saved && saved.fileUrl ? `<button onclick="viewDocument('${doc.key}')" class="mt-3 px-4 py-2 border border-neutral-300 text-[9px] font-black uppercase tracking-widest hover:border-black">View</button>` : ''}
               </div>
-            `).join('')}
+            `;}).join('')}
           </div>
         </section>
       </div>
@@ -841,22 +880,34 @@ function renderModal() {
   if (selectedDocumentKey) {
     const doc = documentsData[selectedDocumentKey];
     if (!doc || !doc.fileUrl) {
+      releaseActiveDocumentPreviewUrl();
       selectedDocumentKey = null;
       modalContainer.className = 'hidden';
       modalContainer.innerHTML = '';
       return;
     }
 
-    const isImage = doc.fileType.startsWith('image/');
-    const isPdf = doc.fileType === 'application/pdf';
+    const normalizedFileUrl = normalizeBinaryAssetUrl(doc.fileUrl, doc.fileType);
+    const resolvedFileType = inferBinaryMimeType(normalizedFileUrl, doc.fileType);
+    const isImage = resolvedFileType.startsWith('image/');
+    const isPdf = resolvedFileType === 'application/pdf' || normalizedFileUrl.startsWith('data:application/pdf');
+    const pdfPreviewUrl = isPdf ? createBinaryAssetBlobUrl(normalizedFileUrl, doc.fileType) : '';
+    releaseActiveDocumentPreviewUrl();
+    activeDocumentPreviewUrl = pdfPreviewUrl.startsWith('blob:') ? pdfPreviewUrl : null;
     const previewContent = isImage
-      ? `<img src="${doc.fileUrl}" alt="${escapeHtml(doc.title)}" class="document-preview-image w-full h-full object-contain">`
+      ? `<img src="${normalizedFileUrl}" alt="${escapeHtml(doc.title)}" class="document-preview-image w-full h-full object-contain">`
       : isPdf
-        ? `<iframe src="${doc.fileUrl}" class="w-full h-[70vh] border border-neutral-200" title="${escapeHtml(doc.title)} preview"></iframe>`
+        ? `<div>
+             <iframe src="${pdfPreviewUrl}" class="w-full h-[70vh] border border-neutral-200 bg-white" title="${escapeHtml(doc.title)} preview"></iframe>
+             <div class="flex items-center gap-3 flex-wrap mt-4">
+               <button onclick="openSelectedDocument()" class="px-4 py-2 border border-neutral-300 text-[9px] font-black uppercase tracking-widest hover:border-black">Open PDF</button>
+               <button onclick="downloadSelectedDocument()" class="px-4 py-2 border border-neutral-300 text-[9px] font-black uppercase tracking-widest hover:border-black">Download PDF</button>
+             </div>
+           </div>`
         : `<div class="py-16 text-center border border-dashed border-neutral-200">
              <p class="text-sm font-black uppercase tracking-widest mb-3">Preview Not Available</p>
              <p class="text-xs text-neutral-500 mb-6">This file type opens best after download.</p>
-             <a href="${doc.fileUrl}" download="${escapeHtml(doc.fileName)}" class="inline-flex items-center justify-center px-4 py-2 border border-black bg-white text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all">Download File</a>
+             <button onclick="downloadSelectedDocument()" class="inline-flex items-center justify-center px-4 py-2 border border-black bg-white text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all">Download File</button>
            </div>`;
 
     modalContainer.className = '';
@@ -968,7 +1019,14 @@ function bindProfileInputs() {
   document.querySelectorAll('.profile-input').forEach((input) => {
     input.addEventListener('input', (event) => {
       // Update the in-memory profile immediately while the user types.
-      profile[event.target.dataset.profileKey] = event.target.value;
+      const key = event.target.dataset.profileKey;
+      if (key === 'rollNo') {
+        event.target.value = normalizeEnrollmentInput(event.target.value);
+      }
+      if (['mobile', 'fatherMobile', 'motherMobile'].includes(key)) {
+        event.target.value = event.target.value.replace(/\D/g, '').slice(0, 10);
+      }
+      profile[key] = event.target.value;
       updateHeader();
       persistSession();
       syncStudentProfileToStorage();
@@ -1039,14 +1097,21 @@ function handleStudentImageUpload(event) {
   };
   reader.readAsDataURL(file);
 }
+function releaseActiveDocumentPreviewUrl() {
+  if (activeDocumentPreviewUrl && activeDocumentPreviewUrl.startsWith('blob:')) {
+    URL.revokeObjectURL(activeDocumentPreviewUrl);
+  }
+  activeDocumentPreviewUrl = null;
+}
 async function handleDocumentUpload(event) {
   const file = event.target.files[0];
   const docKey = event.target.dataset.docKey;
   if (!file || !docKey || !documentsData[docKey]) {
     return;
   }
-  if (file.size > 1024 * 1024) {
-    alert('Document size must be 1MB or less.');
+  const validationError = validateUploadFile(file);
+  if (validationError) {
+    alert(validationError);
     event.target.value = '';
     return;
   }
@@ -1081,8 +1146,9 @@ async function handleApplicationResumeUpload(event) {
   if (!file || !applicationDraft) {
     return;
   }
-  if (file.size > 1024 * 1024) {
-    alert('Resume size must be 1MB or less.');
+  const validationError = validateUploadFile(file, { allowOffice: true });
+  if (validationError) {
+    alert(validationError);
     event.target.value = '';
     return;
   }
@@ -1103,15 +1169,32 @@ function viewDocument(docKey) {
   if (!doc || !doc.fileUrl) {
     return;
   }
+  releaseActiveDocumentPreviewUrl();
   selectedDocumentKey = docKey;
   renderModal();
 }
 function closeDocumentPreview() {
+  releaseActiveDocumentPreviewUrl();
   selectedDocumentKey = null;
   renderModal();
 }
+function openSelectedDocument() {
+  const doc = documentsData[selectedDocumentKey];
+  if (!doc || !doc.fileUrl) {
+    return;
+  }
+  openBinaryAsset(doc.fileUrl, doc.fileType, doc.fileName);
+}
+function downloadSelectedDocument() {
+  const doc = documentsData[selectedDocumentKey];
+  if (!doc || !doc.fileUrl) {
+    return;
+  }
+  downloadBinaryAsset(doc.fileUrl, doc.fileType, doc.fileName);
+}
 function viewApplicationResume() {
   if (!applicationDraft || !applicationDraft.resumeUrl) {
+    alert('No resume is available to preview.');
     return;
   }
 
@@ -1122,6 +1205,7 @@ function viewApplicationResume() {
     fileUrl: applicationDraft.resumeUrl,
     fileType: applicationDraft.resumeType || ''
   };
+  releaseActiveDocumentPreviewUrl();
   selectedDocumentKey = tempKey;
   renderModal();
 }
@@ -1136,6 +1220,7 @@ function closeAppliedRecordView() {
 function viewAppliedResume(recordId) {
   const record = appliedItems.find((item) => item.id === recordId);
   if (!record || !record.resumeUrl) {
+    alert('No resume is available to preview.');
     return;
   }
 
@@ -1146,6 +1231,7 @@ function viewAppliedResume(recordId) {
     fileUrl: record.resumeUrl,
     fileType: record.resumeType || ''
   };
+  releaseActiveDocumentPreviewUrl();
   selectedDocumentKey = tempKey;
   renderModal();
 }
@@ -1218,6 +1304,10 @@ async function handleApply() {
     alert('Please complete all required fields and upload your resume before submitting.');
     return;
   }
+  if (!isValidMobile(applicationDraft.mobile)) {
+    alert('Mobile number must contain exactly 10 digits without country code');
+    return;
+  }
   try {
     await createApplication({
       opportunityId: Number(selectedJob.id) || null,
@@ -1266,6 +1356,8 @@ window.closeApplyModal = closeApplyModal;
 window.handleApply = handleApply;
 window.viewDocument = viewDocument;
 window.closeDocumentPreview = closeDocumentPreview;
+window.openSelectedDocument = openSelectedDocument;
+window.downloadSelectedDocument = downloadSelectedDocument;
 window.viewApplicationResume = viewApplicationResume;
 window.viewAppliedRecord = viewAppliedRecord;
 window.closeAppliedRecordView = closeAppliedRecordView;

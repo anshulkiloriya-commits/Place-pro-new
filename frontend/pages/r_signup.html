@@ -12,11 +12,15 @@ async function signupRecruiter(){
 const recruiterid = document.getElementById("recruiterid").value;
 const company = document.getElementById("company").value;
 const name = document.getElementById("name").value;
-const phone = document.getElementById("phone").value;
+const phone = document.getElementById("phone").value.trim();
 const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
 if(recruiterid=="" || company=="" || name=="" || phone=="" || email=="" || password==""){
 alert("Please fill all fields");
+return;
+}
+if(!/^[0-9]{10}$/.test(phone)){
+alert("Mobile number must contain exactly 10 digits without country code");
 return;
 }
 try {
@@ -86,6 +90,8 @@ alert(error.message || "Signup failed");
 <!-- SLIDER SCRIPT -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    const phoneInput = document.getElementById("phone");
+    if (phoneInput) phoneInput.addEventListener("input", () => phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 10));
     const slides = document.querySelectorAll(".slide");
     let index = 0;
     function showNextSlide() {

@@ -25,6 +25,11 @@ public class OpportunityController {
         return repository.findAllByOrderByCreatedAtDesc();
     }
 
+    @GetMapping("/recruiter/{recruiterUserId}")
+    public List<Opportunity> listRecruiterOpportunities(@PathVariable Long recruiterUserId) {
+        return repository.findByPostedByUserIdOrderByCreatedAtDesc(recruiterUserId);
+    }
+
     @PostMapping
     public Opportunity createOpportunity(@RequestBody Opportunity opportunity) {
         if (isBlank(opportunity.getType()) || isBlank(opportunity.getCompany()) || isBlank(opportunity.getRole())

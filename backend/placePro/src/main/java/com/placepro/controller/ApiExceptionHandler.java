@@ -22,7 +22,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDataIntegrityViolation(DataIntegrityViolationException exception) {
-        return buildResponse(HttpStatus.BAD_REQUEST, "The submitted data violates a database rule");
+        return buildResponse(HttpStatus.BAD_REQUEST, resolveDataIntegrityMessage(exception));
     }
 
     @ExceptionHandler(Exception.class)
@@ -37,5 +37,28 @@ public class ApiExceptionHandler {
         body.put("error", status.getReasonPhrase());
         body.put("message", message);
         return ResponseEntity.status(status).body(body);
+    }
+
+    private String resolveDataIntegrityMessage(DataIntegrityViolationException exception) {
+        String detail = exception.getMostSpecificCause() != null
+            ? exception.getMostSpecificCause().getMessage()
+            : exception.getMessage();
+
+        if (detail == null || detail.isBlank()) {
+            return "The submitted data violates a database rule";
+        }
+
+        String normalized = detail.toLowerCase();
+        if (normalized.contains("student_documents_size_check")) {
+            return "Document size must be 1MB or less";
+        }
+        if (normalized.contains("value too long for type character varying")) {
+            return "The uploaded content is too large for the current field";
+        }
+        if (normalized.contains("duplicate key value")) {
+            return "This record already exists";
+        }
+
+        return "The submitted data violates a database rule";
     }
 }
