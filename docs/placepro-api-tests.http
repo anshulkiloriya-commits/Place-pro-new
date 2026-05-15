@@ -1,0 +1,81 @@
+@baseUrl = http://localhost:8080
+
+### Health check
+GET {{baseUrl}}/api/
+
+### Login - Admin
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "admin123",
+  "role": "Admin"
+}
+
+### Login - Infosys Recruiter
+# Save the returned "id" value and use it as recruiterId below.
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+  "email": "recruiter@infosys.com",
+  "password": "recruiter123",
+  "role": "Recruiter"
+}
+
+### Login - Student
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+  "email": "student001@test.com",
+  "password": "student123",
+  "role": "Student"
+}
+
+### Student profile lookup
+GET {{baseUrl}}/api/students/0801CA251001
+
+### Recruiter-owned opportunities
+@recruiterId = 2
+GET {{baseUrl}}/api/opportunities/recruiter/{{recruiterId}}
+
+### Recruiter-owned applications
+GET {{baseUrl}}/api/applications/recruiter/{{recruiterId}}
+
+### Update candidate pipeline stage
+@applicationId = 1
+PATCH {{baseUrl}}/api/applications/{{applicationId}}/recruiter/{{recruiterId}}
+Content-Type: application/json
+
+{
+  "pipelineStage": "Shortlisted",
+  "status": "Shortlisted",
+  "hiringStatus": "Pending",
+  "recruiterRemarks": "API smoke test update"
+}
+
+### Negative: invalid enrollment format
+PUT {{baseUrl}}/api/students/0801ME251001
+Content-Type: application/json
+
+{
+  "userId": 9,
+  "enrollmentNo": "0801ME251001",
+  "fullName": "Invalid Enrollment",
+  "collegeEmail": "student001@test.com",
+  "mobile": "9876543210"
+}
+
+### Negative: invalid mobile number
+PUT {{baseUrl}}/api/students/0801CA251001
+Content-Type: application/json
+
+{
+  "userId": 9,
+  "enrollmentNo": "0801CA251001",
+  "fullName": "Invalid Mobile",
+  "collegeEmail": "student001@test.com",
+  "mobile": "+919876543210"
+}

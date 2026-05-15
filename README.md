@@ -28,6 +28,14 @@ Run the SQL files in `database/` in order if you are setting up a fresh database
 
 The backend also uses `spring.jpa.hibernate.ddl-auto=update`, so missing columns are created automatically during development.
 
+For final QA/demo testing, load the deterministic seed dataset after the schema is ready:
+
+```text
+005_final_testing_dataset.sql
+```
+
+This resets local application data and creates 120 students, 7 recruiters, 42 opportunities, 600+ applications, documents, interviews, hiring statuses, and communication updates.
+
 ## Backend Setup
 
 The committed `application.yml` reads database settings from environment variables. Defaults are:
@@ -87,17 +95,48 @@ http://localhost:5501/pages/login.html
 
 ## Useful Test Accounts
 
-Create users from the signup page, or register with the backend API. Example recruiter/admin accounts used in local testing:
+After running the final QA seed, use these accounts:
 
 ```text
 Admin
-Email: admin@placepro.com
+Email: admin@test.com
 Password: admin123
 
 Recruiter
-Email: recruiter@placepro.com
+Email: recruiter@infosys.com
 Password: recruiter123
+
+Student
+Email: student001@test.com
+Password: student123
 ```
+
+Additional recruiter accounts use the same password: `recruiter@tcs.com`, `recruiter@wipro.com`, `recruiter@accenture.com`, `recruiter@cognizant.com`, `recruiter@deloitte.com`, and `recruiter@capgemini.com`.
+
+## Reset and Seed Final QA Data
+
+These scripts require PostgreSQL client tools (`psql`) in your PATH. Do not run them against production.
+
+### Windows PowerShell
+
+```powershell
+$env:DB_PASSWORD="your_postgres_password"
+.\scripts\reset-test-data.ps1
+```
+
+### macOS/Linux
+
+```bash
+export DB_PASSWORD="your_postgres_password"
+bash scripts/reset-test-data.sh
+```
+
+You can override `DB_HOST`, `DB_PORT`, `DB_NAME`, and `DB_USERNAME` if your database is not using the defaults.
+
+## Final Testing Support
+
+- Manual QA checklist: `docs/final-testing-checklist.md`
+- REST Client/Thunder Client API tests: `docs/placepro-api-tests.http`
 
 ## Validation Rules
 
