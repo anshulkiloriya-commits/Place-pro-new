@@ -1,6 +1,6 @@
 // This is the backend server address used by the frontend.
 // If your backend port changes later, update it here once.
-const PLACEPRO_API_BASE = window.PLACEPRO_API_BASE || 'http://localhost:8080';
+const PLACEPRO_API_BASE = window.PLACEPRO_API_BASE || 'https://place-pro-new.onrender.com';
 
 function getPlaceProSession() {
   try {
