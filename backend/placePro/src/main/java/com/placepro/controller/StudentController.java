@@ -24,8 +24,8 @@ import com.placepro.repository.UserRepository;
 // Allows frontend (Live Server - port 5500) to call backend (port 8080)
 @CrossOrigin("*")
 public class StudentController {
-    private static final String ENROLLMENT_PATTERN = "^0801(CA|IT|CS|CV)25(10|11)[0-9]+$";
-    private static final String ENROLLMENT_MESSAGE = "Enrollment number must follow format: 0801CA251001";
+    private static final String ENROLLMENT_PATTERN = "^0801(CA|IT|CS|CV)2510[0-9]{2}$";
+    private static final String ENROLLMENT_MESSAGE = "Enrollment number must follow format: 0801XX2510XX, for example 0801CA251001";
     private static final String MOBILE_MESSAGE = "Mobile number must contain exactly 10 digits without country code";
 
     // Repository object to interact with database

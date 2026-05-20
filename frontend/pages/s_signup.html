@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="../css/login.css">
 <script src="../js/api.js"></script>
 <script>
+const ENROLLMENT_PATTERN = /^0801(CA|IT|CS|CV)2510[0-9]{2}$/;
+const ENROLLMENT_MESSAGE = "Enrollment number must follow format: 0801XX2510XX, for example 0801CA251001";
+
 async function signupStudent() {
 
   // Read all input values from the signup form.
@@ -20,8 +23,8 @@ async function signupStudent() {
     alert("Please fill all fields");
     return;
   }
-  if(!/^0801(CA|IT|CS|CV)25(10|11)[0-9]+$/.test(enroll)){
-    alert("Enrollment number must follow format: 0801CA251001");
+  if(!ENROLLMENT_PATTERN.test(enroll)){
+    alert(ENROLLMENT_MESSAGE);
     return;
   }
   if(!/^[0-9]{10}$/.test(phone)){
@@ -77,7 +80,7 @@ async function signupStudent() {
             <p class="sub">Join PlacePr as a Student</p>
             <form onsubmit="event.preventDefault(); signupStudent();">
                 <label>Enrollment Number</label>
-                <input type="text" id="enroll" placeholder="Enter enrollment number">
+                <input type="text" id="enroll" placeholder="0801CA251001" maxlength="12" pattern="0801(CA|IT|CS|CV)2510[0-9]{2}" autocomplete="off">
                 <label>Full Name</label>
                 <input type="text" id="name" placeholder="Enter full name">
                 <label>Phone Number</label>
@@ -100,7 +103,9 @@ async function signupStudent() {
 document.addEventListener("DOMContentLoaded", function () {
     const enrollInput = document.getElementById("enroll");
     const phoneInput = document.getElementById("phone");
-    if (enrollInput) enrollInput.addEventListener("input", () => enrollInput.value = enrollInput.value.toUpperCase().replace(/[^0-9A-Z]/g, ""));
+    if (enrollInput) enrollInput.addEventListener("input", () => {
+        enrollInput.value = enrollInput.value.toUpperCase().replace(/[^0-9A-Z]/g, "").slice(0, 12);
+    });
     if (phoneInput) phoneInput.addEventListener("input", () => phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 10));
     const slides = document.querySelectorAll(".slide");
     let index = 0;

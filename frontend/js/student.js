@@ -192,10 +192,10 @@ async function readFileAsDataUrl(file) {
   });
 }
 function normalizeEnrollmentInput(value) {
-  return String(value || '').trim().toUpperCase();
+  return String(value || '').trim().toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 12);
 }
 function isValidEnrollment(value) {
-  return /^0801(CA|IT|CS|CV)25(10|11)[0-9]+$/.test(normalizeEnrollmentInput(value));
+  return /^0801(CA|IT|CS|CV)2510[0-9]{2}$/.test(normalizeEnrollmentInput(value));
 }
 function isValidMobile(value) {
   return /^[0-9]{10}$/.test(String(value || '').trim());
@@ -319,7 +319,7 @@ async function saveStudentProfile() {
   }
   profile.rollNo = normalizeEnrollmentInput(profile.rollNo);
   if (!isValidEnrollment(profile.rollNo)) {
-    alert('Enrollment number must follow format: 0801CA251001');
+    alert('Enrollment number must follow format: 0801XX2510XX, for example 0801CA251001');
     return false;
   }
   if (profile.mobile && !isValidMobile(profile.mobile)) {
@@ -671,10 +671,12 @@ function renderDocumentsSection(pageId) {
   `;
 }
 function renderInputField(field, type) {
+  const maxLength = field.key === 'rollNo' ? ' maxlength="12"' : '';
+  const pattern = field.key === 'rollNo' ? ' pattern="0801(CA|IT|CS|CV)2510[0-9]{2}"' : '';
   return `
     <div class="border-b border-neutral-100 pb-2">
       <label class="block text-[9px] font-black uppercase text-neutral-400 mb-2 tracking-widest">${field.label}</label>
-      <input type="${type || 'text'}" ${isEditing ? '' : 'disabled'} value="${escapeHtml(profile[field.key] || '')}" data-profile-key="${field.key}" class="profile-input w-full bg-transparent font-bold text-sm outline-none disabled:text-neutral-500" />
+      <input type="${type || 'text'}" ${isEditing ? '' : 'disabled'} value="${escapeHtml(profile[field.key] || '')}" data-profile-key="${field.key}"${maxLength}${pattern} class="profile-input w-full bg-transparent font-bold text-sm outline-none disabled:text-neutral-500" />
     </div>
   `;
 }
